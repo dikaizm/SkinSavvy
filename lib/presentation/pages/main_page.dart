@@ -42,13 +42,38 @@ class _MainPageState extends ConsumerState<MainPage> {
           currentIndex: state.index,
           backgroundColor: Colors.white,
           selectedItemColor: AppTheme.primaryColor,
-          unselectedItemColor: Colors.grey,
+          unselectedItemColor: Colors.black,
           items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.search), label: 'Products'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Routine'),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile')
+              icon: SvgPicture(
+                'assets/icons/nav_home.svg', 
+                width: 24, 
+                height: 24
+              ), 
+              label: 'Home'
+            ),
+            BottomNavigationBarItem(
+                icon: SvgPicture(
+                'assets/icons/nav_product.svg', 
+                width: 24, 
+                height: 24
+              ), 
+                label: 'Products'
+              ),
+            BottomNavigationBarItem(
+              icon: SvgPicture(
+                'assets/icons/nav_routine.svg', 
+                width: 24, 
+                height: 24
+              ),  
+              label: 'Routine'),
+            BottomNavigationBarItem(
+              icon: SvgPicture(
+                'assets/icons/nav_profile.svg', 
+                width: 24, 
+                height: 24
+              ),  
+            label: 'Profile')
           ]),
     );
   }
