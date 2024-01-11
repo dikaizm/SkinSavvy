@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/presentation/pages/auth/login_page.dart';
-import 'package:skinsavvy/presentation/pages/home/home_page.dart';
+import 'package:skinsavvy/presentation/pages/main_page.dart';
 
 void main() async {
-  runApp(const MyApp());
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const LoginPage(),
-        '/home': (context) => const HomePage(),
+        '/home': (context) => const MainPage(),
       },
     );
   }
