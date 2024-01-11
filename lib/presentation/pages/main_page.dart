@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/presentation/notifiers/bottom_nav/bottom_nav_notifier.dart';
@@ -43,37 +44,23 @@ class _MainPageState extends ConsumerState<MainPage> {
           backgroundColor: Colors.white,
           selectedItemColor: AppTheme.primaryColor,
           unselectedItemColor: Colors.black,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: SvgPicture(
-                'assets/icons/nav_home.svg', 
-                width: 24, 
-                height: 24
-              ), 
-              label: 'Home'
-            ),
+                icon: SvgPicture.asset('assets/icons/nav_home.svg',
+                    width: 24, height: 24),
+                label: 'Home'),
             BottomNavigationBarItem(
-                icon: SvgPicture(
-                'assets/icons/nav_product.svg', 
-                width: 24, 
-                height: 24
-              ), 
-                label: 'Products'
-              ),
+                icon: SvgPicture.asset('assets/icons/nav_product.svg',
+                    width: 24, height: 24),
+                label: 'Products'),
             BottomNavigationBarItem(
-              icon: SvgPicture(
-                'assets/icons/nav_routine.svg', 
-                width: 24, 
-                height: 24
-              ),  
-              label: 'Routine'),
+                icon: SvgPicture.asset('assets/icons/nav_routine.svg',
+                    width: 24, height: 24),
+                label: 'Routine'),
             BottomNavigationBarItem(
-              icon: SvgPicture(
-                'assets/icons/nav_profile.svg', 
-                width: 24, 
-                height: 24
-              ),  
-            label: 'Profile')
+                icon: SvgPicture.asset('assets/icons/nav_profile.svg',
+                    width: 24, height: 24),
+                label: 'Profile')
           ]),
     );
   }
