@@ -81,7 +81,7 @@ class _ButtonState extends State<Button> {
                   style: TextStyle(
                     color: widget.textColor,
                     fontSize: widget.fontSize,
-                    fontWeight: FontWeight.bold,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 if (widget.iconPath.isNotEmpty &&

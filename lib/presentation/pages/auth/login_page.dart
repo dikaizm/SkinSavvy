@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
                           'Find it here, join with us!',
                           style: TextStyle(
                             fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.normal,
                             color: Colors.white,
                           ),
                           textAlign: TextAlign.center,

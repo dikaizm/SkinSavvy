@@ -7,8 +7,15 @@ import 'package:skinsavvy/presentation/pages/auth/login_page.dart';
 import 'package:skinsavvy/presentation/pages/main_page.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+List<CameraDescription> cameras = [];
+
+Future<void> main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    cameras = await availableCameras();
+  } on CameraException catch (e) {
+    print('Error in fetching the cameras: $e');
+  }
 
   runApp(const ProviderScope(child: MyApp()));
 }
@@ -32,13 +39,15 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: AppTheme.backgroundColor,
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        fontFamily: 'Plus Jakarta Sans',
+        fontFamily: 'Poppins',
       ),
       initialRoute: AppRoutes.login,
       routes: {
         AppRoutes.login: (context) => const LoginPage(),
         AppRoutes.onboarding: (context) => const OnboardingPage(),
-        AppRoutes.analyzeSkin: (context) => const AnalyzeSkinPage(),
+        AppRoutes.analyzeSkin: (context) => AnalyzeSkinPage(
+              camera: cameras[0],
+            ),
         AppRoutes.home: (context) => const MainPage(),
       },
     );
