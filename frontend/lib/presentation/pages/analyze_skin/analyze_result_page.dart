@@ -4,8 +4,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:skinsavvy/core/config.dart';
-import 'package:skinsavvy/core/routes.dart';
-import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
 import 'package:skinsavvy/presentation/pages/skincare_rec/models/skincare_rec_model.dart';
 import 'package:skinsavvy/presentation/pages/skincare_rec/skincare_rec_page.dart';

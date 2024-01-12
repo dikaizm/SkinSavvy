@@ -8,7 +8,6 @@ import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_skin.dart';
 import 'package:skinsavvy/presentation/pages/auth/login_page.dart';
 import 'package:skinsavvy/presentation/pages/main_page.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
-import 'package:skinsavvy/presentation/pages/skincare_rec/skincare_rec_page.dart';
 
 List<CameraDescription> cameras = [];
 

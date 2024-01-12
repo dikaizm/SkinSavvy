@@ -8,7 +8,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skinsavvy/core/config.dart';
-import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
 
