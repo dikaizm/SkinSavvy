@@ -2,11 +2,13 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skinsavvy/core/routes.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_skin.dart';
 import 'package:skinsavvy/presentation/pages/auth/login_page.dart';
 import 'package:skinsavvy/presentation/pages/main_page.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
+import 'package:skinsavvy/presentation/pages/skincare_rec/skincare_rec_page.dart';
 
 List<CameraDescription> cameras = [];
 
@@ -22,18 +24,6 @@ Future<void> main() async {
   }
 
   runApp(const ProviderScope(child: MyApp()));
-}
-
-class AppRoutes {
-  static const String login = '/login';
-  static const String home = '/home';
-  static const String onboarding = '/onboarding';
-  static const String analyzeSkin = '/analyze-skin';
-  static const String skincareRecommend = '/skincare-recommend';
-}
-
-class AppConfig {
-  static final String serverAddress = dotenv.get('SERVER_ADDRESS');
 }
 
 class MyApp extends StatelessWidget {

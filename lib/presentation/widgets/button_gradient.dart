@@ -4,11 +4,12 @@ import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/presentation/widgets/button.dart';
 
 class ButtonGradient extends Button {
-  const ButtonGradient({
-    required super.label,
-    super.key,
-    super.onPressed,
-  });
+  const ButtonGradient(
+      {required super.label,
+      super.key,
+      super.onPressed,
+      super.horizontalPadding = 16,
+      super.verticalPadding = 16});
 
   @override
   State<ButtonGradient> createState() => _ButtonGradientState();
@@ -36,8 +37,9 @@ class _ButtonGradientState extends State<ButtonGradient> {
             onPressed: widget.onPressed,
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(
-                vertical: 16,
+              padding: EdgeInsets.symmetric(
+                vertical: widget.verticalPadding,
+                horizontal: widget.horizontalPadding,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),

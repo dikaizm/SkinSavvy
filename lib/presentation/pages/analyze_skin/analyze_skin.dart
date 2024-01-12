@@ -7,9 +7,10 @@ import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:skinsavvy/core/config.dart';
 import 'package:skinsavvy/main.dart';
+import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
-import 'package:skinsavvy/presentation/widgets/button_gradient.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class AnalyzeSkinPage extends StatefulWidget {
@@ -166,67 +167,5 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
         ),
       ),
     );
-  }
-}
-
-// A widget that displays the picture taken by the user.
-class AnalyzeSkinResultPage extends StatefulWidget {
-  final String imagePath;
-  final PredictionData data;
-
-  const AnalyzeSkinResultPage(
-      {super.key, required this.imagePath, required this.data});
-
-  @override
-  State<AnalyzeSkinResultPage> createState() => _AnalyzeSkinResultPageState();
-}
-
-class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 60,
-          title: const Text('Skin Analysis Result'),
-          centerTitle: true,
-          titleTextStyle: const TextStyle(
-            fontFamily: 'Poppins',
-            color: Colors.black,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-          automaticallyImplyLeading: false,
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-        ),
-        // The image is stored as a file on the device. Use the `Image.file`
-        // constructor with the given path to display the image.
-        body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(
-                  height: 300,
-                  width: double.infinity,
-                  child: Image.file(File(widget.imagePath))),
-              Text(
-                  'Confidence level: ${widget.data.predictions[0].confidenceLevel}'),
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                ButtonGradient(label: 'Get Skincare Recommendations', onPressed: () => {
-                  Navigator.pushNamed(context, AppRoutes.skincareRecommend)
-                })
-              ],
-            ),
-          ),
-        ));
   }
 }

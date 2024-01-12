@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skinsavvy/core/routes.dart';
 import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/models/onboarding_model.dart';
 import 'package:skinsavvy/presentation/widgets/button_gradient.dart';
