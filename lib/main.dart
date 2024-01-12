@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,9 @@ List<CameraDescription> cameras = [];
 Future<void> main() async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
+
+    await dotenv.load(fileName: ".env");
+
     cameras = await availableCameras();
   } on CameraException catch (e) {
     print('Error in fetching the cameras: $e');
@@ -25,6 +29,11 @@ class AppRoutes {
   static const String home = '/home';
   static const String onboarding = '/onboarding';
   static const String analyzeSkin = '/analyze-skin';
+  static const String skincareRecommend = '/skincare-recommend';
+}
+
+class AppConfig {
+  static final String serverAddress = dotenv.get('SERVER_ADDRESS');
 }
 
 class MyApp extends StatelessWidget {

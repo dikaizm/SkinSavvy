@@ -18,7 +18,7 @@ class ButtonOption extends Button {
   });
 
   @override
-  State<Button> createState() => _ButtonOptionState();
+  State<ButtonOption> createState() => _ButtonOptionState();
 }
 
 class _ButtonOptionState extends State<ButtonOption> {

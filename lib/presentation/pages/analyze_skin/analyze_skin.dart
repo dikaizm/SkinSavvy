@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:http/http.dart' as http;
@@ -6,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:skinsavvy/main.dart';
+import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
+import 'package:skinsavvy/presentation/widgets/button_gradient.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class AnalyzeSkinPage extends StatefulWidget {
@@ -97,51 +101,56 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
             try {
               // Ensure that the camera is initialized.
               await _initializeControllerFuture;
-        
+
               // Attempt to take a picture and get the file `image`
               // where it was saved.
               final image = await _controller.takePicture();
-        
+
               if (!mounted) return;
-        
+
               // Convert image to bytes
-              // List<int> imageBytes = await File(image.path).readAsBytes();
-        
-              // // Create multipart request
-              // var request = http.MultipartRequest(
-              //     "POST", Uri.parse("https://api.skinsavvy.dev/api/v1/analyze"));
-        
-              // // Add the image as a file in the request
-              // request.files.add(http.MultipartFile.fromBytes(
-              //   'image',
-              //   imageBytes,
-              //   filename: 'image.jpg',
-              //   contentType: MediaType('image',
-              //       'jpeg'), // Adjust content type based on your image type
-              // ));
-        
-              // // Send the request
-              // var response = await request.send();
-        
-              // if (response.statusCode == 200) {
-              //   print('Image successfully sent to the backend');
-              //   // Handle the backend response if needed
-              // } else {
-              //   print(
-              //       'Failed to send image to the backend. Status code: ${response.statusCode}');
-              //   // Handle the error
-              // }
-        
-              // If the picture was taken, display it on a new screen.
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => DisplayPictureScreen(
-                    // Pass the automatically generated path to
-                    // the DisplayPictureScreen widget.
-                    imagePath: image.path,
+              List<int> imageBytes = await File(image.path).readAsBytes();
+
+              // Create multipart request
+              var request = http.MultipartRequest(
+                  "POST", Uri.parse('${AppConfig.serverAddress}/post/predict'));
+
+              // Add the image as a file in the request
+              request.files.add(http.MultipartFile.fromBytes(
+                'image',
+                imageBytes,
+                filename: 'image.jpg',
+                contentType: MediaType('image',
+                    'jpeg'), // Adjust content type based on your image type
+              ));
+
+              // Send the request
+              var response = await request.send();
+
+              if (response.statusCode == 200) {
+                print('Image successfully sent to the backend');
+
+                final String jsonString = await response.stream.bytesToString();
+                final Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+                final DetectionResponse detectionResponse =
+                    DetectionResponse.fromJson(jsonData);
+
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => AnalyzeSkinResultPage(
+                      // Pass the automatically generated path to
+                      // the AnalyzeSkinResultPage widget.
+                      imagePath: image.path,
+                      data: detectionResponse.predictions,
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                print(
+                    'Failed to send image to the backend. Status code: ${response.statusCode}');
+                // Handle the error
+              }
             } catch (e) {
               // If an error occurs, log the error to the console.
               print('Error: $e');
@@ -161,18 +170,63 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
 }
 
 // A widget that displays the picture taken by the user.
-class DisplayPictureScreen extends StatelessWidget {
+class AnalyzeSkinResultPage extends StatefulWidget {
   final String imagePath;
+  final PredictionData data;
 
-  const DisplayPictureScreen({super.key, required this.imagePath});
+  const AnalyzeSkinResultPage(
+      {super.key, required this.imagePath, required this.data});
 
+  @override
+  State<AnalyzeSkinResultPage> createState() => _AnalyzeSkinResultPageState();
+}
+
+class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
-      // The image is stored as a file on the device. Use the `Image.file`
-      // constructor with the given path to display the image.
-      body: Image.file(File(imagePath)),
-    );
+        appBar: AppBar(
+          toolbarHeight: 60,
+          title: const Text('Skin Analysis Result'),
+          centerTitle: true,
+          titleTextStyle: const TextStyle(
+            fontFamily: 'Poppins',
+            color: Colors.black,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          automaticallyImplyLeading: false,
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+        ),
+        // The image is stored as a file on the device. Use the `Image.file`
+        // constructor with the given path to display the image.
+        body: Container(
+          alignment: Alignment.center,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              SizedBox(
+                  height: 300,
+                  width: double.infinity,
+                  child: Image.file(File(widget.imagePath))),
+              Text(
+                  'Confidence level: ${widget.data.predictions[0].confidenceLevel}'),
+            ],
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ButtonGradient(label: 'Get Skincare Recommendations', onPressed: () => {
+                  Navigator.pushNamed(context, AppRoutes.skincareRecommend)
+                })
+              ],
+            ),
+          ),
+        ));
   }
 }
