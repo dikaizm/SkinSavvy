@@ -16,8 +16,6 @@ Aplikasi ini menggabungkan teknologi kecerdasan buatan dengan pengetahuan dermat
 
 ### Tech Stack
 - Backend: Golang
-- LLM: Google Gemini
-- CV: Yolov8
 - Frontend: Flutter
 
 ## Tampilan App
