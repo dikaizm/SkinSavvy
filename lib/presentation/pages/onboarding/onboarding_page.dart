@@ -4,7 +4,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/models/onboarding_model.dart';
-import 'package:skinsavvy/presentation/widgets/button.dart';
 import 'package:skinsavvy/presentation/widgets/button_option.dart';
 
 final onboardingProvider =
@@ -55,60 +54,67 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
               const SizedBox(
                 height: 48,
               ),
-            if (stateValue.activityType.isNotEmpty)
-              Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.0),
-                      shape: BoxShape.rectangle,
-                      gradient: const LinearGradient(
-                        colors: [
-                          AppTheme.primaryColor,
-                          AppTheme.orangeColor,
-                        ],
-                      ),
-                    ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        elevation: 0,
-                        shadowColor: Colors.transparent,
-                      ),
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.analyzeSkin);
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Analyze my skin',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          SvgPicture.asset(
-                            'assets/icons/arrow_right.svg',
-                            width: 24,
-                            height: 24,
-                          ),
-                        ],
-                      ),
-                    ),
-                  )),
+            if (stateValue.activityType.isNotEmpty) _submitButton(context),
           ],
         ),
       ),
     );
+  }
+
+  Padding _submitButton(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 60),
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12.0),
+            shape: BoxShape.rectangle,
+            gradient: const LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                AppTheme.primaryColor,
+                AppTheme.orangeColor,
+              ],
+            ),
+          ),
+          child: ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              padding: const EdgeInsets.symmetric(
+                vertical: 16,
+              ),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              elevation: 0,
+              shadowColor: Colors.transparent,
+            ),
+            onPressed: () {
+              // Call API to save user data
+              // if success, navigate to analyze skin page, else show error
+              Navigator.pushNamed(context, AppRoutes.analyzeSkin);
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  'Analyze my skin',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                SvgPicture.asset(
+                  'assets/icons/arrow_right.svg',
+                  width: 24,
+                  height: 24,
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 
   Column _genderOptions(OnboardingProvider state, OnboardingState stateValue) {

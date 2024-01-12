@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:skinsavvy/main.dart';
-import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
 import 'package:skinsavvy/presentation/widgets/button.dart';
-import 'package:skinsavvy/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();

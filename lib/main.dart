@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
@@ -7,6 +8,8 @@ import 'package:skinsavvy/presentation/pages/main_page.dart';
 import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const ProviderScope(child: MyApp()));
 }
 
