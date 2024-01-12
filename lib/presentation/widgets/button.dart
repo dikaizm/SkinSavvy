@@ -5,9 +5,12 @@ import 'package:skinsavvy/core/themes/theme.dart';
 class Button extends StatefulWidget {
   final String label;
   final String iconPath;
+  final String iconPosition;
+  final double columnGap;
   final Color backgroundColor;
   final Color textColor;
   final double width;
+  final double height;
   final double fontSize;
   final double verticalPadding;
   final double horizontalPadding;
@@ -16,19 +19,22 @@ class Button extends StatefulWidget {
   final Function()? onPressed;
 
   const Button({
-    Key? key,
+    super.key,
     required this.label,
+    this.columnGap = 8.0,
     this.iconPath = '',
+    this.iconPosition = 'left',
     this.backgroundColor = AppTheme.primaryColor,
     this.textColor = Colors.white,
     this.width = double.infinity,
+    this.height = 48,
     this.fontSize = 16,
     this.verticalPadding = 16,
     this.horizontalPadding = 16,
     this.enabled = true,
     this.elevated = true,
     this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   State<Button> createState() => _ButtonState();
@@ -49,13 +55,12 @@ class _ButtonState extends State<Button> {
             onPressed: widget.enabled ? widget.onPressed : null,
             style: ElevatedButton.styleFrom(
               backgroundColor: widget.backgroundColor,
-              foregroundColor: widget.textColor,
               padding: EdgeInsets.symmetric(
                 vertical: widget.verticalPadding,
                 horizontal: widget.horizontalPadding,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
               elevation: _isPressed ? 4 : 0,
               shadowColor: _isPressed ? Colors.grey : Colors.transparent,
@@ -63,20 +68,32 @@ class _ButtonState extends State<Button> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (widget.iconPath.isNotEmpty)
+                if (widget.iconPath.isNotEmpty && widget.iconPosition == 'left')
                   SvgPicture.asset(
                     widget.iconPath,
                     width: 24,
                     height: 24,
                   ),
-                if (widget.iconPath.isNotEmpty) const SizedBox(width: 8),
+                if (widget.iconPath.isNotEmpty && widget.iconPosition == 'left')
+                  SizedBox(width: widget.columnGap),
                 Text(
                   widget.label,
                   style: TextStyle(
+                    color: widget.textColor,
                     fontSize: widget.fontSize,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                if (widget.iconPath.isNotEmpty &&
+                    widget.iconPosition == 'right')
+                  SizedBox(width: widget.columnGap),
+                if (widget.iconPath.isNotEmpty &&
+                    widget.iconPosition == 'right')
+                  SvgPicture.asset(
+                    widget.iconPath,
+                    width: 24,
+                    height: 24,
+                  ),
               ],
             )),
       ),

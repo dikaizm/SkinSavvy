@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
+import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_skin.dart';
 import 'package:skinsavvy/presentation/pages/auth/login_page.dart';
 import 'package:skinsavvy/presentation/pages/main_page.dart';
+import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
 
 void main() async {
   runApp(const ProviderScope(child: MyApp()));
+}
+
+class AppRoutes {
+  static const String login = '/login';
+  static const String home = '/home';
+  static const String onboarding = '/onboarding';
+  static const String analyzeSkin = '/analyze-skin';
 }
 
 class MyApp extends StatelessWidget {
@@ -22,10 +31,12 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         fontFamily: 'Plus Jakarta Sans',
       ),
-      initialRoute: '/',
+      initialRoute: AppRoutes.login,
       routes: {
-        '/': (context) => const LoginPage(),
-        '/home': (context) => const MainPage(),
+        AppRoutes.login: (context) => const LoginPage(),
+        AppRoutes.onboarding: (context) => const OnboardingPage(),
+        AppRoutes.analyzeSkin: (context) => const AnalyzeSkinPage(),
+        AppRoutes.home: (context) => const MainPage(),
       },
     );
   }

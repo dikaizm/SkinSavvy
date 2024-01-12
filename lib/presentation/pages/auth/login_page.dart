@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:skinsavvy/main.dart';
+import 'package:skinsavvy/presentation/pages/onboarding/onboarding_page.dart';
 import 'package:skinsavvy/presentation/widgets/button.dart';
 import 'package:skinsavvy/services/auth_service.dart';
 
@@ -29,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               child: Center(
                 child: Image.asset(
                   'assets/images/logo_skinsavvy_monochrome.png',
@@ -38,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(top: 80, bottom: 60, left: 16, right: 16),
+              padding: const EdgeInsets.only(
+                  top: 80, bottom: 60, left: 24, right: 24),
               decoration: BoxDecoration(
                   gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -80,17 +83,15 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 32),
                   Button(
-                    label: 'Masuk',
-                    onPressed: () {
-                      Navigator.pushNamed(context, '/home');
-                    },
-                  ),
-                  const SizedBox(height: 16),
-                  Button(
                     label: 'Sign in with Google',
                     iconPath: 'assets/icons/ic_google.svg',
                     onPressed: () async {
-                      await AuthService().signInWithGoogle();
+                      // await AuthService().signInWithGoogle();
+
+                      // if user already registered, go to main page
+                      // else go to onboarding page
+
+                      Navigator.pushNamed(context, AppRoutes.onboarding);
                     },
                     backgroundColor: Colors.white,
                     textColor: Colors.black,
