@@ -1,10 +1,24 @@
 # SkinSavvy App
 
 ## Deskripsi Tim
+
+### Nama Tim
+InnoFours
+
+### Anggota
 - Ariq Heritsa Maalik (Hipster)
 - Adrian Putra Pratama Badjideh (Hacker)
 - Izzulhaq Mahardika (Hacker)
 - Nadya Khairani (Hustler)
+
+### Tentang App
+Aplikasi ini menggabungkan teknologi kecerdasan buatan dengan pengetahuan dermatologi untuk memberikan solusi produk skincare yang dipersonalisasi sesuai dengan kebutuhan kulit masing-masing pengguna.
+
+### Tech Stack
+- Backend: Golang
+- LLM: Google Gemini
+- CV: Yolov8
+- Frontend: Flutter
 
 ## Tampilan App
 ### Login Screen
