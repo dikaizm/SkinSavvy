@@ -51,6 +51,9 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     super.dispose();
   }
 
+  double _uploadProgress = 0.0;
+  bool _uploading = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,17 +75,21 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            // If the Future is complete, display the preview.
-            return CameraPreview(_controller);
-          } else {
-            // Otherwise, display a loading indicator.
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
+      body: Column(
+        children: [
+          FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // If the Future is complete, display the preview.
+                return CameraPreview(_controller);
+              } else {
+                // Otherwise, display a loading indicator.
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ],
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -95,67 +102,7 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
             borderRadius: BorderRadius.circular(999.0),
           ),
           // Provide an onPressed callback.
-          onPressed: () async {
-            // Take the Picture in a try / catch block. If anything goes wrong,
-            // catch the error.
-            try {
-              // Ensure that the camera is initialized.
-              await _initializeControllerFuture;
-
-              // Attempt to take a picture and get the file `image`
-              // where it was saved.
-              final image = await _controller.takePicture();
-
-              if (!mounted) return;
-
-              // Convert image to bytes
-              List<int> imageBytes = await File(image.path).readAsBytes();
-
-              // Create multipart request
-              var request = http.MultipartRequest(
-                  "POST", Uri.parse('${AppConfig.serverAddress}/post/predict'));
-
-              // Add the image as a file in the request
-              request.files.add(http.MultipartFile.fromBytes(
-                'image',
-                imageBytes,
-                filename: 'image.jpg',
-                contentType: MediaType('image',
-                    'jpeg'), // Adjust content type based on your image type
-              ));
-
-              // Send the request
-              var response = await request.send();
-
-              if (response.statusCode == 200) {
-                print('Image successfully sent to the backend');
-
-                final String jsonString = await response.stream.bytesToString();
-                final Map<String, dynamic> jsonData = jsonDecode(jsonString);
-
-                final DetectionResponse detectionResponse =
-                    DetectionResponse.fromJson(jsonData);
-
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => AnalyzeSkinResultPage(
-                      // Pass the automatically generated path to
-                      // the AnalyzeSkinResultPage widget.
-                      imagePath: image.path,
-                      data: detectionResponse.predictions,
-                    ),
-                  ),
-                );
-              } else {
-                print(
-                    'Failed to send image to the backend. Status code: ${response.statusCode}');
-                // Handle the error
-              }
-            } catch (e) {
-              // If an error occurs, log the error to the console.
-              print('Error: $e');
-            }
-          },
+          onPressed: _captureAndSend,
           child: SizedBox(
             width: 300,
             height: 300,
@@ -166,5 +113,114 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _captureAndSend() async {
+    // Take the Picture in a try / catch block. If anything goes wrong,
+    // catch the error.
+    try {
+      // Ensure that the camera is initialized.
+      await _initializeControllerFuture;
+
+      // Attempt to take a picture and get the file `image`
+      // where it was saved.
+      final image = await _controller.takePicture();
+
+      if (!mounted) return;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Analyzing skin...'),
+              content: LinearProgressIndicator(
+                value: _uploadProgress,
+              ),
+            );
+          });
+
+      // Convert image to bytes
+      List<int> imageBytes = await File(image.path).readAsBytes();
+
+      // Create multipart request
+      var request = http.MultipartRequest(
+          "POST", Uri.parse('${AppConfig.serverAddress}/post/predict'));
+
+      // Add the image as a file in the request
+      request.files.add(http.MultipartFile.fromBytes(
+        'image',
+        imageBytes,
+        filename: 'image.jpg',
+        contentType: MediaType(
+            'image', 'jpeg'), // Adjust content type based on your image type
+      ));
+
+      var client = http.Client();
+      var streamedResponse = await client.send(request);
+
+      var totalBytes = streamedResponse.contentLength ?? 0;
+      var bytesUploaded = 0;
+
+      streamedResponse.stream.listen((value) {
+        bytesUploaded += value.length;
+        var progress = ((bytesUploaded / totalBytes) * 100).round();
+        setState(() {
+          _uploadProgress = progress / 100;
+        });
+      });
+
+      // Set uploading to true
+      setState(() {
+        _uploading = true;
+      });
+
+      if (streamedResponse.statusCode == 200) {
+        // Set uploading to false
+        setState(() {
+          _uploading = false;
+        });
+
+        print('Image successfully sent to the backend');
+        var response = await streamedResponse.stream.bytesToString();
+
+        final Map<String, dynamic> jsonData = jsonDecode(response);
+
+        final DetectionResponse detectionResponse =
+            DetectionResponse.fromJson(jsonData);
+
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AnalyzeSkinResultPage(
+              // Pass the automatically generated path to
+              // the AnalyzeSkinResultPage widget.
+              imagePath: image.path,
+              data: detectionResponse.predictions,
+            ),
+          ),
+        );
+      } else {
+        print(
+            'Failed to send image to the backend. Status code: ${streamedResponse.statusCode}');
+
+        // Hide the modal popup on error
+        Navigator.of(context).pop();
+
+        // Set uploading to false
+        setState(() {
+          _uploading = false;
+        });
+      }
+    } catch (e) {
+      // If an error occurs, log the error to the console.
+      print('Error: $e');
+
+      // Hide the modal popup on error
+      Navigator.of(context).pop();
+
+      // Set uploading to false
+      setState(() {
+        _uploading = false;
+      });
+    }
   }
 }

@@ -25,7 +25,7 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
     try {
       String concatReq = '';
       for (var prediction in data) {
-        concatReq += '${prediction.label}, ';
+        concatReq += '${prediction.name}, ';
       }
 
       Map<String, dynamic> req = {
@@ -105,8 +105,6 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
                 child: Table(
                   columnWidths: const {
                     0: FlexColumnWidth(1),
-                    1: FlexColumnWidth(1),
-                    2: FlexColumnWidth(1),
                   },
                   children: [
                     const TableRow(
@@ -123,33 +121,9 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
                             ),
                           ),
                         ),
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Confidence Level',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        TableCell(
-                          child: Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Text(
-                              'Status',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
                       ],
                     ),
-                    ..._displaySkinResults(widget.data.predictions),
+                    ..._displaySkinResults(widget.data.skinProblems),
                   ],
                 ),
               )
@@ -170,41 +144,17 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
   }
 }
 
-List<TableRow> _displaySkinResults(List<Prediction> predictions) {
+List<TableRow> _displaySkinResults(List<SkinProblem> data) {
   List<TableRow> resultRows = [];
 
-  for (var prediction in predictions) {
+  for (var item in data) {
     TableRow row = TableRow(
       children: [
         TableCell(
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Text(
-              prediction.label,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-        TableCell(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              prediction.confidenceLevel.toString(),
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ),
-        TableCell(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              prediction.status.toString(), // Assuming 'status' is of type int
+              item.name,
               style: const TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w500,
