@@ -37,7 +37,7 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // Get a specific camera from the list of available cameras.
       widget.camera,
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.ultraHigh,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -50,9 +50,6 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     _controller.dispose();
     super.dispose();
   }
-
-  double _uploadProgress = 0.0;
-  bool _uploading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -75,21 +72,29 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: Column(
-        children: [
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return CameraPreview(_controller);
-              } else {
-                // Otherwise, display a loading indicator.
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-        ],
+      body: GestureDetector(
+        onTapDown: (details) {
+          // Get the tap coordinates
+          final double x =
+              details.globalPosition.dx / MediaQuery.of(context).size.width;
+          final double y =
+              details.globalPosition.dy / MediaQuery.of(context).size.height;
+
+          // Set the focus point based on the tap location
+          _controller.setFocusPoint(Offset(x, y));
+        },
+        child: FutureBuilder<void>(
+          future: _initializeControllerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              // If the Future is complete, display the preview.
+              return CameraPreview(_controller);
+            } else {
+              // Otherwise, display a loading indicator.
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ),
 
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
@@ -122,20 +127,35 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // Ensure that the camera is initialized.
       await _initializeControllerFuture;
 
+      // Check if exposure compensation is supported
+      if (_controller.value.exposurePointSupported) {
+        _controller.setExposureMode(ExposureMode.auto);
+
+        // Set exposure compensation value (in exposure stops, 0 is neutral)
+        _controller.setExposureOffset(1.0); // Adjust this value as needed
+      }
+      // Check if flash is supported
+      if (_controller.value.flashMode == FlashMode.off) {
+        _controller.setFlashMode(FlashMode.auto);
+      } else {
+        _controller.setFlashMode(FlashMode.off);
+      }
+
       // Attempt to take a picture and get the file `image`
       // where it was saved.
       final image = await _controller.takePicture();
 
       if (!mounted) return;
 
+      // Show modal popup
+      print('Showing modal popup');
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Analyzing skin...'),
-              content: LinearProgressIndicator(
-                value: _uploadProgress,
-              ),
+            return const AlertDialog(
+              title: Text('Analyzing skin...'),
+              content: SizedBox(
+                  height: 40, width: 40, child: CircularProgressIndicator()),
             );
           });
 
@@ -155,38 +175,31 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
             'image', 'jpeg'), // Adjust content type based on your image type
       ));
 
-      var client = http.Client();
-      var streamedResponse = await client.send(request);
+      // Send the request
+      var response = await request.send();
 
-      var totalBytes = streamedResponse.contentLength ?? 0;
-      var bytesUploaded = 0;
-
-      streamedResponse.stream.listen((value) {
-        bytesUploaded += value.length;
-        var progress = ((bytesUploaded / totalBytes) * 100).round();
-        setState(() {
-          _uploadProgress = progress / 100;
-        });
-      });
-
-      // Set uploading to true
-      setState(() {
-        _uploading = true;
-      });
-
-      if (streamedResponse.statusCode == 200) {
-        // Set uploading to false
-        setState(() {
-          _uploading = false;
-        });
-
+      if (response.statusCode == 200) {
         print('Image successfully sent to the backend');
-        var response = await streamedResponse.stream.bytesToString();
 
-        final Map<String, dynamic> jsonData = jsonDecode(response);
+        final String jsonString = await response.stream.bytesToString();
+        final Map<String, dynamic> jsonData = jsonDecode(jsonString);
 
         final DetectionResponse detectionResponse =
             DetectionResponse.fromJson(jsonData);
+
+        if (detectionResponse.status != 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: detectionResponse.error.isNotEmpty
+                  ? Text(detectionResponse.error)
+                  : const Text('An error occurred. Please try again later.'),
+            ),
+          );
+          Navigator.of(context).pop();
+          return;
+        }
+
+        Navigator.of(context).pop();
 
         await Navigator.of(context).push(
           MaterialPageRoute(
@@ -200,27 +213,12 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
         );
       } else {
         print(
-            'Failed to send image to the backend. Status code: ${streamedResponse.statusCode}');
-
-        // Hide the modal popup on error
-        Navigator.of(context).pop();
-
-        // Set uploading to false
-        setState(() {
-          _uploading = false;
-        });
+            'Failed to send image to the backend. Status code: ${response.statusCode}');
+        // Handle the error
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
       print('Error: $e');
-
-      // Hide the modal popup on error
-      Navigator.of(context).pop();
-
-      // Set uploading to false
-      setState(() {
-        _uploading = false;
-      });
     }
   }
 }

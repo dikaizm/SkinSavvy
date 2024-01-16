@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
         AppRoutes.login: (context) => const LoginPage(),
         AppRoutes.onboarding: (context) => const OnboardingPage(),
         AppRoutes.analyzeSkin: (context) => AnalyzeSkinPage(
-              camera: cameras[0],
+              camera: cameras[1],
             ),
         AppRoutes.home: (context) => const MainPage(),
       },

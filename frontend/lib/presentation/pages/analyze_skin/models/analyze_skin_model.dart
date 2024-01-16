@@ -2,11 +2,13 @@ class DetectionResponse {
   final String message;
   final PredictionData predictions;
   final int status;
+  final String error;
 
   DetectionResponse({
     required this.message,
     required this.predictions,
     required this.status,
+    this.error = '',
   });
 
   factory DetectionResponse.fromJson(Map<String, dynamic> json) {
@@ -14,6 +16,7 @@ class DetectionResponse {
       message: json['message'] ?? '',
       predictions: PredictionData.fromJson(json['predictions'] ?? {}),
       status: json['status'] ?? 0,
+      error: json['error'] ?? '',
     );
   }
 }
