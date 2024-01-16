@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
               padding: const EdgeInsets.all(24),
               child: Center(
                 child: Image.asset(
-                  'assets/images/logo_skinsavvy_monochrome.png',
+                  'assets/images/logo_skinsavvy_white.png',
                   height: 40,
                 ),
               ),
