@@ -37,6 +37,10 @@ class OnboardingProvider extends StateNotifier<OnboardingState> {
       : super(const OnboardingState(
             name: '', gender: '', age: '', activityType: ''));
 
+  String getName() {
+    return state.name;
+  }
+
   void setName(String name) {
     state = state.copyWith(name: name);
   }

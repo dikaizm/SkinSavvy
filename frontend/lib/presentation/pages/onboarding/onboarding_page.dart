@@ -82,10 +82,22 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 if (stateValue.activityType.isNotEmpty)
                   ButtonGradient(
                     label: 'Analyze my skin',
-                    onPressed: () => {
+                    onPressed: () {
+                      // Validate name
+                      if (state.getName().trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Name cannot be empty'),
+                            backgroundColor: Colors.redAccent,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                        return;
+                      }
+
                       // Call API to save user data
                       // if success, navigate to analyze skin page, else show error
-                      Navigator.pushNamed(context, AppRoutes.analyzeSkin)
+                      Navigator.pushNamed(context, AppRoutes.analyzeSkin);
                     },
                   ),
                 const SizedBox(height: 64),
@@ -118,6 +130,12 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           ),
           child: TextField(
             controller: _nameController,
+            onTapOutside: (_) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
+            onSubmitted: (_) {
+              FocusManager.instance.primaryFocus?.unfocus();
+            },
             onEditingComplete: () {
               state.setName(_nameController.text);
             },
