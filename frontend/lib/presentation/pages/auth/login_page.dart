@@ -89,7 +89,7 @@ class _LoginPageState extends State<LoginPage> {
                       // if user already registered, go to main page
                       // else go to onboarding page
 
-                      Navigator.pushNamed(context, AppRoutes.onboarding);
+                      Navigator.pushReplacementNamed(context, AppRoutes.onboarding);
                     },
                     backgroundColor: Colors.white,
                     textColor: Colors.black,
