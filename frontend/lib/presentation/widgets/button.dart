@@ -93,6 +93,7 @@ class _ButtonState extends State<Button> {
                     widget.iconPath,
                     width: 24,
                     height: 24,
+                    color: widget.textColor,
                   ),
               ],
             )),
