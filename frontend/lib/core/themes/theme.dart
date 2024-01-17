@@ -14,4 +14,12 @@ class AppTheme {
 
   static const Color primary50 = Color(0xFFFEEEE3);
   static const Color linen = Color(0xFFFEEEE3);
+  static const Color dartTeal = Color(0xFF358098);
+
+  // Box shadows
+  static const BoxShadow boxShadow = BoxShadow(
+    color: Color.fromRGBO(0, 0, 0, 0.08),
+    blurRadius: 16,
+    offset: Offset(0, 2),
+  );
 }
