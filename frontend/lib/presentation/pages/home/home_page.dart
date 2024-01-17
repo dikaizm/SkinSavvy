@@ -4,6 +4,7 @@ import 'package:skinsavvy/core/routes.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/presentation/pages/home/models/category_model.dart';
 import 'package:skinsavvy/presentation/pages/home/models/explore_model.dart';
+import 'package:skinsavvy/presentation/widgets/app_bar.dart';
 import 'package:skinsavvy/presentation/widgets/button.dart';
 
 class HomePage extends StatefulWidget {
@@ -39,27 +40,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-        appBar: AppBar(
-          toolbarHeight: 56,
-          title: Text(
-            '${getGreeting()}, Nadya!',
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          automaticallyImplyLeading: false,
-          elevation: 0,
-          backgroundColor: AppTheme.backgroundColor,
-          scrolledUnderElevation: 0,
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.notifications),
-            )
-          ],
-        ),
+        appBar: appBar('${getGreeting()}, Nadya!', 20),
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
@@ -78,16 +59,22 @@ class _HomePageState extends State<HomePage> {
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: const BoxDecoration(
-        color: AppTheme.secondaryColor,
+        image: DecorationImage(
+          image: AssetImage('assets/images/home/banner_bg.png'),
+          fit: BoxFit.cover,
+        ),
         borderRadius: BorderRadius.all(Radius.circular(20)),
+        // color: Colors.transparent
       ),
-      child:  Row(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text(
-                  'My Skin\' Progress',
+                  'My Skin\'s Progress',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -96,18 +83,28 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(height: 20),
                 Button(
                   label: 'Check out',
+                  borderRadius: 40,
+                  width: 140,
+                  verticalPadding: 4,
+                  horizontalPadding: 4,
                   backgroundColor: Colors.white,
-                  fontSize: 14,
+                  fontSize: 12,
                   textColor: Colors.black,
                   iconPath: 'assets/icons/arrow_right.svg',
                   iconPosition: 'right',
                   onPressed: () {
                     Navigator.pushNamed(context, AppRoutes.skinProgress);
                   },
-                )
+                ),
               ],
             ),
           ),
+          Expanded(
+            child: Image.asset(
+              'assets/images/home/banner_progress.png',
+              height: 120,
+            ),
+          )
         ],
       ),
     );
