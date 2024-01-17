@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:skinsavvy/core/content.dart';
 import 'package:skinsavvy/core/routes.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
+import 'package:skinsavvy/presentation/pages/routine/models/schedule_model.dart';
 import 'package:skinsavvy/presentation/widgets/app_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -15,21 +17,63 @@ class RoutinePage extends StatefulWidget {
 class _RoutinePageState extends State<RoutinePage> {
   DateTime todayDate = DateTime.now();
 
+  ScheduleModel schedules = ScheduleModel.getSchedule();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar('Skincare Routine', 16),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            _scheduleBannerSection(),
-            const SizedBox(height: 16),
-            _calendarSection(),
-          ],
-        ),
+      appBar: appBar(context, 'Skincare Routine ✨', 16, false),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _scheduleBannerSection(),
+          const SizedBox(height: 32),
+          _calendarSection(),
+          const SizedBox(height: 32),
+          Column(
+            children: _scheduleItem(),
+          )
+        ],
       ),
     );
+  }
+
+  List<Column> _scheduleItem() {
+    // final int length = schedules.endDate.difference(schedules.startDate).inDays;
+
+    final List<Column> listSchedule = [];
+    DateTime currentDate = DateTime.now();
+
+    for (var i = 0; i < 7 && currentDate.isBefore(schedules.endDate); i++) {
+      listSchedule.add(Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(40),
+                color: Colors.blue[100],
+              ),
+              child: Text(
+                '${(i == 0 ? 'Today,' : '')} ${currentDate.day} ${AppContent.months[currentDate.month - 1]} ${currentDate.year}',
+                style:
+                    const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+              )),
+
+          const SizedBox(height: 8,),
+
+          // HorizontalCardStack(),
+
+          if (i != 6)
+            const SizedBox(
+              height: 12,
+            )
+        ],
+      ));
+      currentDate = currentDate.add(const Duration(days: 1));
+    }
+
+    return listSchedule;
   }
 
   GestureDetector _scheduleBannerSection() {
@@ -76,9 +120,11 @@ class _RoutinePageState extends State<RoutinePage> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-      ),
+          borderRadius: BorderRadius.circular(12),
+          color: Colors.white,
+          boxShadow: const [
+            AppTheme.boxShadow,
+          ]),
       child: TableCalendar(
         focusedDay: todayDate,
         firstDay: DateTime.utc(2010, 10, 16),
