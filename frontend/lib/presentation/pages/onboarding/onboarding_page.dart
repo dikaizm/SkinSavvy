@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:skinsavvy/core/themes/theme.dart';
 
 import '../../../core/routes.dart';
+import '../../../core/themes/theme.dart';
 import '../../widgets/button_gradient.dart';
 import '../../widgets/button_option.dart';
 import 'models/onboarding_model.dart';
@@ -133,11 +133,11 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
             onTapOutside: (_) {
               FocusManager.instance.primaryFocus?.unfocus();
             },
+            onChanged: (value) {
+              state.setName(value);
+            },
             onSubmitted: (_) {
               FocusManager.instance.primaryFocus?.unfocus();
-            },
-            onEditingComplete: () {
-              state.setName(_nameController.text);
             },
             decoration: const InputDecoration(
               hintText: 'Enter your name',
