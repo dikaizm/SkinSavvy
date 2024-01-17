@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logger/logger.dart';
+import 'package:skinsavvy/presentation/pages/routine/routine_page.dart';
+import 'package:skinsavvy/presentation/pages/routine/schedule_page.dart';
+import 'package:skinsavvy/presentation/pages/scan_page.dart';
+import 'package:skinsavvy/presentation/pages/skin_progress/skin_progress_page.dart';
 
 import 'core/routes.dart';
 import 'core/themes/theme.dart';
@@ -46,6 +50,10 @@ class MyApp extends StatelessWidget {
         AppRoutes.onboarding: (context) => const OnboardingPage(),
         AppRoutes.analyzeSkin: (context) => AnalyzeSkinPage(camera: cameras[0]),
         AppRoutes.home: (context) => const MainPage(),
+        AppRoutes.skinProgress: (context) => const SkinProgressPage(),
+        AppRoutes.scan: (context) => const ScanPage(),
+        AppRoutes.routine: (context) => const RoutinePage(),
+        AppRoutes.schedule: (context) => const SchedulePage(),
       },
     );
   }
