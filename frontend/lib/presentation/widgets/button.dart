@@ -11,6 +11,7 @@ class Button extends StatefulWidget {
   final Color textColor;
   final double width;
   final double height;
+  final double borderRadius;
   final double fontSize;
   final double verticalPadding;
   final double horizontalPadding;
@@ -28,6 +29,7 @@ class Button extends StatefulWidget {
     this.textColor = Colors.white,
     this.width = double.infinity,
     this.height = 48,
+    this.borderRadius = 12,
     this.fontSize = 16,
     this.verticalPadding = 16,
     this.horizontalPadding = 16,
@@ -60,7 +62,7 @@ class _ButtonState extends State<Button> {
                 horizontal: widget.horizontalPadding,
               ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(widget.borderRadius),
               ),
               elevation: _isPressed ? 4 : 0,
               shadowColor: _isPressed ? Colors.grey : Colors.transparent,
@@ -93,6 +95,7 @@ class _ButtonState extends State<Button> {
                     widget.iconPath,
                     width: 24,
                     height: 24,
+                    color: widget.textColor,
                   ),
               ],
             )),
