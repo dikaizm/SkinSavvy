@@ -52,56 +52,56 @@ class _MainPageState extends ConsumerState<MainPage> {
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_home.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               color: AppTheme.primaryColor,
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_home.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
             ),
             label: 'Home',
           ),
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_scan.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               color: AppTheme.primaryColor,
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_scan.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
             ),
             label: 'Scan',
           ),
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_routine.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               color: AppTheme.primaryColor,
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_routine.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
             ),
             label: 'Routine',
           ),
           BottomNavigationBarItem(
             activeIcon: SvgPicture.asset(
               'assets/icons/nav_profile.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
               color: AppTheme.primaryColor,
             ),
             icon: SvgPicture.asset(
               'assets/icons/nav_profile.svg',
-              width: 28,
-              height: 28,
+              width: 24,
+              height: 24,
             ),
             label: 'Profile',
           )

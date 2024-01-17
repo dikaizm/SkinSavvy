@@ -40,7 +40,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
-        appBar: appBar('${getGreeting()}, Nadya!', 20),
+        appBar: appBar(context, '${getGreeting()}, Nadya!', 20, false),
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
