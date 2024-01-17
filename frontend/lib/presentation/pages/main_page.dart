@@ -37,43 +37,76 @@ class _MainPageState extends ConsumerState<MainPage> {
       ),
       resizeToAvoidBottomInset: true,
       bottomNavigationBar: BottomNavigationBar(
-          onTap: (index) {
-            state.changeIndex(index);
-          },
-          currentIndex: state.index,
-          backgroundColor: Colors.white,
-          selectedItemColor: AppTheme.primaryColor,
-          unselectedItemColor: Colors.black,
-          showUnselectedLabels: true,
-          selectedFontSize: 12,
-          type: BottomNavigationBarType.fixed,
-          elevation: 0,
-          items: [
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset('assets/icons/nav_home.svg',
-                    width: 28, height: 28, color: AppTheme.primaryColor),
-                icon: SvgPicture.asset('assets/icons/nav_home.svg',
-                    width: 28, height: 28),
-                label: 'Home'),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset('assets/icons/nav_scan.svg',
-                    width: 28, height: 28, color: AppTheme.primaryColor),
-                icon: SvgPicture.asset('assets/icons/nav_scan.svg',
-                    width: 28, height: 28),
-                label: 'Scan'),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset('assets/icons/nav_routine.svg',
-                    width: 28, height: 28, color: AppTheme.primaryColor),
-                icon: SvgPicture.asset('assets/icons/nav_routine.svg',
-                    width: 28, height: 28),
-                label: 'Routine'),
-            BottomNavigationBarItem(
-                activeIcon: SvgPicture.asset('assets/icons/nav_profile.svg',
-                    width: 28, height: 28, color: AppTheme.primaryColor),
-                icon: SvgPicture.asset('assets/icons/nav_profile.svg',
-                    width: 28, height: 28),
-                label: 'Profile')
-          ]),
+        onTap: (index) {
+          state.changeIndex(index);
+        },
+        currentIndex: state.index,
+        backgroundColor: Colors.white,
+        selectedItemColor: AppTheme.primaryColor,
+        unselectedItemColor: Colors.black,
+        showUnselectedLabels: true,
+        selectedFontSize: 12,
+        type: BottomNavigationBarType.fixed,
+        elevation: 0,
+        items: [
+          BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_home.svg',
+              width: 28,
+              height: 28,
+              color: AppTheme.primaryColor,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_home.svg',
+              width: 28,
+              height: 28,
+            ),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_scan.svg',
+              width: 28,
+              height: 28,
+              color: AppTheme.primaryColor,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_scan.svg',
+              width: 28,
+              height: 28,
+            ),
+            label: 'Scan',
+          ),
+          BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_routine.svg',
+              width: 28,
+              height: 28,
+              color: AppTheme.primaryColor,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_routine.svg',
+              width: 28,
+              height: 28,
+            ),
+            label: 'Routine',
+          ),
+          BottomNavigationBarItem(
+            activeIcon: SvgPicture.asset(
+              'assets/icons/nav_profile.svg',
+              width: 28,
+              height: 28,
+              color: AppTheme.primaryColor,
+            ),
+            icon: SvgPicture.asset(
+              'assets/icons/nav_profile.svg',
+              width: 28,
+              height: 28,
+            ),
+            label: 'Profile',
+          )
+        ],
+      ),
     );
   }
 }
