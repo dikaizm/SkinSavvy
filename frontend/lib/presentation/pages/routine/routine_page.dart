@@ -125,7 +125,9 @@ class _RoutinePageState extends State<RoutinePage> {
           boxShadow: const [
             AppTheme.boxShadow,
           ]),
-      child: TableCalendar(
+      child: Column(
+        children: [
+          TableCalendar(
         focusedDay: todayDate,
         firstDay: DateTime.utc(2010, 10, 16),
         lastDay: DateTime.utc(2030, 3, 14),
@@ -159,7 +161,42 @@ class _RoutinePageState extends State<RoutinePage> {
           outsideDaysVisible: false,
         ),
       ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          _buttonFilterCalendar('3 days'),
+          const SizedBox(width: 4,),
+          _buttonFilterCalendar('1 week'),
+          const SizedBox(width: 4,),
+          _buttonFilterCalendar('All'),
+        ]
+      )
+        ]
+      )
     );
+  }
+
+  Expanded _buttonFilterCalendar(String title) {
+    return Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.gray,
+                ),
+                borderRadius: BorderRadius.circular(40),
+                color: Colors.white,
+              ),
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            )
+          )
   }
 
   void _onDaySelected(selectedDay, focusedDay) {
