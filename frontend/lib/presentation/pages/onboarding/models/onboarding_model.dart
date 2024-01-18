@@ -42,23 +42,23 @@ class OnboardingProvider extends StateNotifier<OnboardingState> {
     return state.name;
   }
 
-  void setName(String name) {
+  void setName(String name) async {
     state = state.copyWith(name: name);
-    SharedService.saveData('name', name);
+    await SharedService.saveData('name', name);
   }
 
-  void setGender(String selectedGender) {
+  void setGender(String selectedGender) async {
     state = state.copyWith(gender: selectedGender);
-    SharedService.saveData('gender', selectedGender);
+    await SharedService.saveData('gender', selectedGender);
   }
 
-  void setAge(String selectedAge) {
+  void setAge(String selectedAge) async {
     state = state.copyWith(age: selectedAge);
-    SharedService.saveData('age', selectedAge);
+    await SharedService.saveData('age', selectedAge);
   }
 
-  void setActivityType(String selectedActivityType) {
+  void setActivityType(String selectedActivityType) async {
     state = state.copyWith(activityType: selectedActivityType);
-    SharedService.saveData('activityType', selectedActivityType);
+    await SharedService.saveData('activityType', selectedActivityType);
   }
 }
