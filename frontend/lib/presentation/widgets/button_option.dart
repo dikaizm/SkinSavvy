@@ -6,12 +6,15 @@ import 'button.dart';
 class ButtonOption extends Button {
   final bool isSelected;
   final Image? image;
+  final Color borderColor;
 
   const ButtonOption({
     required this.isSelected,
     required super.label,
     this.image,
+    this.borderColor = Colors.white,
     super.key,
+    super.fontSize,
     super.height = 42,
     super.backgroundColor = Colors.white,
     super.textColor = Colors.black,
@@ -42,7 +45,7 @@ class _ButtonOptionState extends State<ButtonOption> {
           side: BorderSide(
             color: widget.isSelected
                 ? AppTheme.primaryColor
-                : widget.backgroundColor,
+                : widget.borderColor,
             width: 1.0,
           ),
         ),
