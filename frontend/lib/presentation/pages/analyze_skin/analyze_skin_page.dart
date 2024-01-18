@@ -11,7 +11,6 @@ import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skinsavvy/core/config.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
-import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
 
@@ -31,8 +30,7 @@ class AnalyzeSkinPage extends StatefulWidget {
 class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
   late CameraController _controller;
   late Future<void>? _initializeControllerFuture;
-
-  CameraDescription? _selectedCamera = cameras[1];
+  int _cameraIndex = 1;
 
   @override
   void initState() {
@@ -41,7 +39,7 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     // create a CameraController.
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      _selectedCamera ?? widget.cameras[0],
+      widget.cameras[_cameraIndex],
       // Define the resolution to use.
       ResolutionPreset.ultraHigh,
     );
@@ -55,6 +53,27 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     // Dispose of the controller when the widget is disposed.
     _controller.dispose();
     super.dispose();
+  }
+
+  void _toggleCamera() async {
+    // Get the index of the next camera (front or rear)
+    final nextCameraIndex = (_cameraIndex + 1) % widget.cameras.length;
+
+    // Dispose the current controller
+    await _controller.dispose();
+
+    // Initialize a new controller with the next camera
+    _controller = CameraController(
+      widget.cameras[nextCameraIndex],
+      ResolutionPreset.ultraHigh,
+    );
+
+    await _controller.initialize();
+
+    // Update the selected camera index
+    setState(() {
+      _cameraIndex = nextCameraIndex;
+    });
   }
 
   @override
@@ -157,12 +176,7 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
                     borderRadius: BorderRadius.circular(999.0),
                   ),
                   onPressed: () {
-                    setState(() {
-                      _selectedCamera = _selectedCamera == cameras[0]
-                          ? cameras[1]
-                          : cameras[0];
-                    });
-                    initState();
+                    _toggleCamera();
                   },
                   child: Icon(
                     Icons.flip_camera_android,
@@ -183,29 +197,6 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     // Take the Picture in a try / catch block. If anything goes wrong,
     // catch the error.
     try {
-      // Ensure that the camera is initialized.
-      await _initializeControllerFuture;
-
-      // Check if exposure compensation is supported
-      if (_controller.value.exposurePointSupported) {
-        _controller.setExposureMode(ExposureMode.auto);
-
-        // Set exposure compensation value (in exposure stops, 0 is neutral)
-        _controller.setExposureOffset(1.0); // Adjust this value as needed
-      }
-      // Check if flash is supported
-      if (_controller.value.flashMode == FlashMode.off) {
-        _controller.setFlashMode(FlashMode.auto);
-      } else {
-        _controller.setFlashMode(FlashMode.off);
-      }
-
-      // Attempt to take a picture and get the file `image`
-      // where it was saved.
-      final image = await _controller.takePicture();
-
-      if (!mounted) return;
-
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -230,6 +221,27 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
               ),
             );
           });
+
+      // Ensure that the camera is initialized.
+      await _initializeControllerFuture;
+
+      // Check if exposure compensation is supported
+      if (_controller.value.exposurePointSupported) {
+        _controller.setExposureMode(ExposureMode.auto);
+
+        // Set exposure compensation value (in exposure stops, 0 is neutral)
+        _controller.setExposureOffset(1.0); // Adjust this value as needed
+      }
+      // Check if flash is supported
+      if (_controller.value.flashMode != FlashMode.off) {
+        _controller.setFlashMode(FlashMode.off);
+      }
+
+      // Attempt to take a picture and get the file `image`
+      // where it was saved.
+      final image = await _controller.takePicture();
+
+      if (!mounted) return;
 
       // Convert image to bytes
       List<int> imageBytes = await File(image.path).readAsBytes();
