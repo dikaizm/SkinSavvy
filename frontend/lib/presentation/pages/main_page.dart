@@ -19,6 +19,12 @@ class _MainPageState extends ConsumerState<MainPage> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
+  void dispose() {
+    ref.read(bottomNavNotifier).dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = ref.watch(bottomNavNotifier);
 
