@@ -1,6 +1,13 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
 import 'package:skinsavvy/core/routes.dart';
+import 'package:skinsavvy/presentation/pages/auth/models/login_model.dart';
 import 'package:skinsavvy/presentation/widgets/button.dart';
+import 'package:skinsavvy/services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -84,12 +91,29 @@ class _LoginPageState extends State<LoginPage> {
                     label: 'Sign in with Google',
                     iconPath: 'assets/icons/ic_google.svg',
                     onPressed: () async {
-                      // await AuthService().signInWithGoogle();
+                      try {
+                        Response response = await AuthService().signInWithGoogle();
 
-                      // if user already registered, go to main page
-                      // else go to onboarding page
+                        // if user already registered, go to main page
+                        // else go to onboarding page
 
-                      Navigator.pushReplacementNamed(context, AppRoutes.home);
+                        LoginResponse loginResponse =
+                            LoginResponse.fromJson(jsonDecode(response.body));
+
+                        if (loginResponse.status == 200) {
+                          Navigator.pushNamed(context, AppRoutes.onboarding);
+                        } else {
+                          throw Exception('Login failed');
+                        }
+                      } on Exception catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(e.toString()),
+                            backgroundColor: Colors.redAccent,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
+                      }
                     },
                     backgroundColor: Colors.white,
                     textColor: Colors.black,

@@ -1,26 +1,40 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:convert';
+
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart';
+import 'package:skinsavvy/core/config.dart';
 
 class AuthService {
-  signInWithGoogle() async {
+  Future<Response> signInWithGoogle() async {    
     // begin interactive sign-in process
-    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+    final GoogleSignInAccount? gUser = await GoogleSignIn(
+      clientId: AppConfig.googleClientId,
+    ).signIn();
 
     // Check if the user canceled the login process
     if (gUser == null) {
-      return null; // Return null or handle cancellation appropriately
+      throw Exception('Login canceled by user');
     }
 
     // get auth details
     final GoogleSignInAuthentication gAuth = await gUser.authentication;
 
-    // create new credential for user
-    final credential = GoogleAuthProvider.credential(
-      accessToken: gAuth.accessToken,
-      idToken: gAuth.idToken,
+    if (gAuth.accessToken == null || gAuth.idToken == null) {
+      throw Exception('Failed to get auth details');
+    }
+
+    // sign in using token
+    Response response = await post(
+      Uri.parse('${AppConfig.serverAddress}/sessions/oauth/google'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({
+        'id_token': gAuth.idToken,
+        'access_token': gAuth.accessToken,
+      }),
     );
 
-    // sign in with credential
-    return await FirebaseAuth.instance.signInWithCredential(credential);
+    return response;
   }
 }

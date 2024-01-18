@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "675626770934",
+    "firebase_url": "https://skinsavvy-fdc69-default-rtdb.firebaseio.com",
+    "project_id": "skinsavvy-fdc69",
+    "storage_bucket": "skinsavvy-fdc69.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:675626770934:android:eab1398d4958d3e84727d7",
+        "android_client_info": {
+          "package_name": "com.example.skinsavvy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "675626770934-uopqcgcfpb6198a9497fpm0q1b0mnk50.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6-2Vdj70aAj3m9FS_5L_iwSUx86sLBNw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "675626770934-uopqcgcfpb6198a9497fpm0q1b0mnk50.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
