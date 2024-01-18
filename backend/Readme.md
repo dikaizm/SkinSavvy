@@ -12,9 +12,13 @@
 
 
 * Add Value To ".env.example" File >> Change ".env.example" To ".env"
-    You Must Add:
+    You Must Add Value onto:
     1. Host
     2. Port 
+    3. Firebase Project ID
+    4. Gemini API Key
+    5. Firebase Service Account Key (must be a json file and the path is on root directory)
+    6. Google Oauth Credentials (Client ID, Client Secret, Redirect Urls)
 
 * Run The Application With Your Terminal
 
@@ -27,13 +31,17 @@
 Users can get recommendation about skincare that suitable for their skin problem.
 
 ## API Documentation
+
 * User: [Click here for API documentation!](https://documenter.getpostman.com/view/25551317/2s9YsJDDW3)
 
 ## Technologies Used
 * Golang - Backend Language
+* onnx - Runtime for model serving
 * Fiber - Backend Framework
-* Firebase - Authentication
-* MySQL - Database Management System
+* Firebase - firestore as database
+* Google OAUTH - Authentication using google account
+* Google Cloud Platform (Cloud Storage) - blob storage
+* Gemini - Google MultiModal LLM
 * Github - Version Control
 * Postman - API Documentation
 

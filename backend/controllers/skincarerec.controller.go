@@ -4,13 +4,14 @@ import (
 	"log"
 	"strings"
 
-	"github.com/InnoFours/skin-savvy/llm"
+	"github.com/InnoFours/skin-savvy/google/llm"
 	"github.com/InnoFours/skin-savvy/models/request"
+	"github.com/InnoFours/skin-savvy/sephoraScrape"
 	"github.com/gofiber/fiber/v2"
 )
 
 func SkincareRec(c *fiber.Ctx) error {
-	var req request.GeminiRequest
+	var req request.GeminiProductRecRequest
 
 	if err := c.BodyParser(&req); err != nil {
 		log.Fatal("Failed to parse json body.")
@@ -21,7 +22,7 @@ func SkincareRec(c *fiber.Ctx) error {
 		})
 	}
 
-	geminiResult, err := llm.GeminiClient(req.Question)
+	geminiResult, err := llm.GeminiProductRecommender(req.Question, req.Gender, req.Age, req.OutdoorAct)
 	if err != nil {
 		log.Fatal("Error processing question by gemini: ", err.Error())
 		return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{
@@ -48,9 +49,18 @@ func SkincareRec(c *fiber.Ctx) error {
 		}
 	}
 
+	log.Println(result)
+
+	details, err := sephoraScrape.ProductScraper(result)
+	if err != nil {
+		log.Fatal("Failed to scrape product", err.Error())
+	}
+
+	log.Println(details)
+
 	return c.JSON(fiber.Map{
 		"message":  "successfully processed question by Gemini.",
 		"status":   fiber.StatusOK,
-		"response": result,
+		"response": details,
 	})
 }
