@@ -220,7 +220,7 @@ List<Container> _displaySkinResults(List<PredictionSummary> data) {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${item.percentage.toStringAsFixed(2)}%',
+            '${item.percentage}%',
             style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
