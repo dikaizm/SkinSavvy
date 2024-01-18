@@ -17,7 +17,7 @@ class _SchedulePageState extends State<SchedulePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: appBar(context, 'Your Skincare Schedule', 16, true),
+      appBar: appBar(context, 'Your Skincare Schedule', 16, true, true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

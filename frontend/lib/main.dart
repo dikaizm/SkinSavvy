@@ -10,7 +10,7 @@ import 'package:skinsavvy/presentation/pages/skin_progress/skin_progress_page.da
 
 import 'core/routes.dart';
 import 'core/themes/theme.dart';
-import 'presentation/pages/analyze_skin/analyze_skin.dart';
+import 'presentation/pages/analyze_skin/analyze_skin_page.dart';
 import 'presentation/pages/auth/login_page.dart';
 import 'presentation/pages/main_page.dart';
 import 'presentation/pages/onboarding/onboarding_page.dart';
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'SkinSavvy',
       theme: ThemeData(
         scaffoldBackgroundColor: AppTheme.backgroundColor,

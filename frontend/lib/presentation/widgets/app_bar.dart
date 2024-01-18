@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
 
-AppBar appBar(BuildContext context, title, double fontSize, bool showBackButton) {
+AppBar appBar(BuildContext context, title, double fontSize, bool showBackButton, bool showBell) {
   return AppBar(
     toolbarHeight: 56,
     titleSpacing: showBackButton ? 0 : 16,
@@ -30,7 +30,7 @@ AppBar appBar(BuildContext context, title, double fontSize, bool showBackButton)
     elevation: 0,
     backgroundColor: AppTheme.backgroundColor,
     scrolledUnderElevation: 0,
-    actions: [
+    actions: showBell ? [
       Padding(
         padding: const EdgeInsets.only(right: 4),
         child: IconButton(
@@ -42,6 +42,6 @@ AppBar appBar(BuildContext context, title, double fontSize, bool showBackButton)
           ),
         ),
       )
-    ],
+    ] : null,
   );
 }

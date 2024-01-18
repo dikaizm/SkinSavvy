@@ -35,7 +35,7 @@ class _RoutinePageState extends ConsumerState<RoutinePage> {
     final filterStateValue = ref.watch(filterCalendarProvider);
 
     return Scaffold(
-      appBar: appBar(context, 'Skincare Routine ✨', 16, false),
+      appBar: appBar(context, 'Skincare Routine ✨', 16, false, true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [

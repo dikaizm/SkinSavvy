@@ -1,6 +1,6 @@
 class SkincareRecResponse {
   final String message;
-  final List<ProductDetail> response;
+  final RecResponse response;
   final int status;
 
   SkincareRecResponse({
@@ -12,8 +12,31 @@ class SkincareRecResponse {
   factory SkincareRecResponse.fromJson(Map<String, dynamic> json) {
     return SkincareRecResponse(
       message: json['message'] as String,
-      response: ProductDetail.fromJson(json['response']['Product Details']) as List<ProductDetail>,
+      response: RecResponse.fromJson(json['response'] as Map<String, dynamic>),
       status: json['status'] as int,
+    );
+  }
+}
+
+class RecResponse {
+  final List<ProductDetail> products;
+
+  RecResponse({
+    required this.products,
+  });
+
+  factory RecResponse.fromJson(Map<String, dynamic> json) {
+    List<ProductDetail> products = [];
+
+    if (json['product_details'] != null) {
+      // Handle the case where 'product_details' is not present or null
+      products = (json['product_details'] as List<dynamic>)
+          .map((item) => ProductDetail.fromJson(item as Map<String, dynamic>))
+          .toList();
+    }
+
+    return RecResponse(
+      products: products,
     );
   }
 }

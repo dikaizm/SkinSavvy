@@ -36,8 +36,9 @@ class PredictionData {
         detailsList.map((detail) => PredictionDetail.fromJson(detail)).toList();
 
     final List<dynamic> summaryList = json['summary'] ?? [];
-    final List<PredictionSummary> parsedSummary =
-        summaryList.map((summary) => PredictionSummary.fromJson(summary)).toList();
+    final List<PredictionSummary> parsedSummary = summaryList
+        .map((summary) => PredictionSummary.fromJson(summary))
+        .toList();
 
     return PredictionData(
       details: parsedDetails,

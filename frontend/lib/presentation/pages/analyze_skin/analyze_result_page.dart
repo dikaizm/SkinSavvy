@@ -10,6 +10,78 @@ import 'package:skinsavvy/presentation/pages/skincare_rec/models/skincare_rec_mo
 import 'package:skinsavvy/presentation/pages/skincare_rec/skincare_rec_page.dart';
 import 'package:skinsavvy/presentation/widgets/button_gradient.dart';
 
+final List<Map<String, dynamic>> productData = [
+  {
+    "brand": "Drunk Elephant",
+    "name": "Ceramighty™  AF Eye Cream with Ceramides",
+    "Price": "\$60.00",
+    "url":
+        "https://www.sephora.com/ceramighty-af-eye-cream-with-ceramides-P501028",
+    "img":
+        "https://www.sephora.com/productimages/sku/s2593820-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz / 15 mL",
+    "Explanation":
+        "This eye cream contains a potent blend of vitamin C, ferulic acid, and niacinamide, which work together to brighten dark circles and reduce the appearance of fine lines and wrinkles. It also contains caffeine, which helps to reduce puffiness and inflammation."
+  },
+  {
+    "brand": "Sunday Riley",
+    "name": "Auto Correct Brightening + Depuffing Eye Cream for Dark Circles",
+    "Price": "\$65.00",
+    "url":
+        "https://www.sephora.com/auto-correct-brightening-depuffing-eye-contour-cream-P424948",
+    "img":
+        "https://www.sephora.com/productimages/sku/s2020634-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz/ 15 mL",
+    "Explanation":
+        "This eye cream contains a cocktail of antioxidants, including vitamin C, green tea extract, and pomegranate extract, which help to protect the delicate skin around the eyes from damage caused by free radicals. It also contains hyaluronic acid, which helps to hydrate and plump the skin, reducing the appearance of dark circles."
+  },
+  {
+    "brand": "Kiehl's Since 1851",
+    "name": "Mini Creamy Eye Treatment with Avocado",
+    "Price": "\$37.00",
+    "url":
+        "https://www.sephora.com/creamy-eye-treatment-with-avocado-mini-P435805",
+    "img":
+        "https://www.sephora.com/productimages/sku/s1988815-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz/ 14 g",
+    "Explanation":
+        "This eye cream is formulated with avocado oil, which is rich in vitamins A, D, and E. These vitamins help to nourish and protect the skin, while also reducing the appearance of dark circles and fine lines. It also contains shea butter, which helps to hydrate and soften the skin."
+  },
+  {
+    "brand": "La Mer",
+    "name": "The Eye Concentrate Cream",
+    "Price": "\$270.00",
+    "url": "https://www.sephora.com/la-mer-the-eye-concentrate-P455924",
+    "img":
+        "https://www.sephora.com/productimages/sku/s2341600-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz/ 15 mL",
+    "Explanation":
+        "This eye cream contains a proprietary blend of sea kelp and other marine botanicals, which help to reduce the appearance of dark circles and fine lines. It also contains hyaluronic acid, which helps to hydrate and plump the skin."
+  },
+  {
+    "brand": "Skinfix",
+    "name": "barrier+ Triple Lipid + Collagen Brightening Eye Treatment ",
+    "Price": "\$54.00",
+    "url": "https://www.sephora.com/skinfix-triple-lipid-eye-lift-P505049",
+    "img":
+        "https://www.sephora.com/productimages/sku/s2639904-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz / 15 mL",
+    "Explanation":
+        "This eye gel contains a powerful combination of antioxidants, including vitamin C, vitamin E, and ferulic acid, which help to protect the delicate skin around the eyes from damage caused by free radicals. It also contains hyaluronic acid, which helps to hydrate and plump the skin, reducing the appearance of dark circles."
+  },
+  {
+    "brand": "Peter Thomas Roth",
+    "name": "Potent-C™ Vitamin C Power Eye Cream",
+    "Price": "\$68.00",
+    "url": "https://www.sephora.com/potent-c-tm-power-eye-cream-P433456",
+    "img":
+        "https://www.sephora.com/productimages/sku/s2058154-main-zoom.jpg?imwidth=480",
+    "quantity": "Size: 0.5 oz/ 15 mL",
+    "Explanation":
+        "This spot brightener is formulated with a high concentration of vitamin C, which helps to lighten dark circles and hyperpigmentation. It also contains niacinamide, which helps to improve the skin's overall tone and texture."
+  }
+];
+
 class AnalyzeSkinResultPage extends StatefulWidget {
   final String imagePath;
   final PredictionData data;
@@ -22,8 +94,36 @@ class AnalyzeSkinResultPage extends StatefulWidget {
 }
 
 class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
+  final String userName = 'Nadya';
+
   void _getSkincare(context, List<PredictionSummary> data) async {
     try {
+      await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const AlertDialog(
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Finding your best skincare...',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  CircularProgressIndicator(
+                    color: AppTheme.primaryColor,
+                  ),
+                ],
+              ),
+            );
+          });
+
       String concatReq = '';
       for (var prediction in data) {
         concatReq += '${prediction.name}, ';
@@ -36,7 +136,7 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
         'outdoor_activity': 'yes',
       };
 
-      var response = await post(
+      Response response = await post(
         Uri.parse('${AppConfig.serverAddress}/post/recommendation'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
@@ -44,19 +144,25 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
         body: jsonEncode(req),
       );
 
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      // List<ProductDetail> products = productData.map((product) {
+      //   return ProductDetail.fromJson(product);
+      // }).toList();
 
+      if (response.statusCode == 200) {
         final SkincareRecResponse productRec =
-            SkincareRecResponse.fromJson(jsonData);
+            SkincareRecResponse.fromJson(jsonDecode(response.body));
+
+        print(productRec.response);
 
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => SkincareRecPage(
-              products: productRec.response,
+              products: productRec.response.products,
             ),
           ),
         );
+
+        Navigator.pop(context);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
@@ -65,8 +171,10 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
             behavior: SnackBarBehavior.floating,
           ),
         );
+
+        Navigator.pop(context);
       }
-    } on Exception {
+    } on Exception catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Failed to get skincare recommendation'),
@@ -74,6 +182,8 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+
+      Navigator.pop(context);
     }
   }
 
@@ -147,10 +257,10 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
                         child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Expanded(
+                              Expanded(
                                   child: Text(
-                                'Hi Nadya, this is your skin condition!',
-                                style: TextStyle(
+                                'Hi $userName, ${(widget.data.summary.isNotEmpty) ? 'this is your skin condition!' : 'your skin is healthy!'}',
+                                style: const TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w600),
                               )),
                               Padding(
@@ -163,13 +273,14 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
                             ]),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Skin Conditions',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                      if (widget.data.summary.isNotEmpty)
+                        const Text(
+                          'Skin Conditions',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
                       const SizedBox(height: 16),
                       Expanded(
                         child: ListView(

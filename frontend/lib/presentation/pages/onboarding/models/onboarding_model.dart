@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:skinsavvy/services/shared_service.dart';
 
 class OnboardingState extends Equatable {
   final String name;
@@ -43,17 +44,21 @@ class OnboardingProvider extends StateNotifier<OnboardingState> {
 
   void setName(String name) {
     state = state.copyWith(name: name);
+    SharedService.saveData('name', name);
   }
 
   void setGender(String selectedGender) {
     state = state.copyWith(gender: selectedGender);
+    SharedService.saveData('gender', selectedGender);
   }
 
   void setAge(String selectedAge) {
     state = state.copyWith(age: selectedAge);
+    SharedService.saveData('age', selectedAge);
   }
 
   void setActivityType(String selectedActivityType) {
     state = state.copyWith(activityType: selectedActivityType);
+    SharedService.saveData('activityType', selectedActivityType);
   }
 }
