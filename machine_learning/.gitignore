@@ -1,0 +1,9 @@
+#Excluded folder and its subfolder
+Include/
+Lib/
+Scripts/
+share/
+
+# Excluded files
+pyvenv.cfg
+yolov8n.pt

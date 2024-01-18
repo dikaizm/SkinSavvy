@@ -1,0 +1,13 @@
+train: D:\Tech Projects\skin_problem_detection\train
+val: D:\Tech Projects\skin_problem_detection\valid
+test: D:\Tech Projects\skin_problem_detection\test
+
+nc: 6
+names: ['Acne', 'Blackhead', 'Dark Circles', 'Dry Skin', 'Englarged Pores', 'Wrinkles']
+
+# roboflow:
+#   workspace: augment-gkvan
+#   project: skin-problems-detection
+#   version: 9
+#   license: CC BY 4.0
+#   url: https://universe.roboflow.com/augment-gkvan/skin-problems-detection/dataset/9
