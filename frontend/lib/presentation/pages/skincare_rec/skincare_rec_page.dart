@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:skinsavvy/core/routes.dart';
 import 'package:skinsavvy/core/themes/theme.dart';
+import 'package:skinsavvy/presentation/pages/skincare_rec/models/skincare_rec_model.dart';
+import 'package:skinsavvy/presentation/widgets/button.dart';
 
 class SkincareRecPage extends StatelessWidget {
-  final List<String> products;
+  final List<ProductDetail> products;
 
   const SkincareRecPage({super.key, required this.products});
 
@@ -27,12 +30,18 @@ class SkincareRecPage extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
         children: [
           ..._displayProducts(products),
+          const SizedBox(height: 24),
+          Button(
+              label: 'Add to Routine',
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.home);
+              }),
         ],
       ),
     );
   }
 
-  List<Container> _displayProducts(List<String> products) {
+  List<Container> _displayProducts(List<ProductDetail> products) {
     List<Container> productContainers = [];
 
     for (var prod in products) {
@@ -78,7 +87,7 @@ class SkincareRecPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      prod,
+                      prod.brand,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

@@ -28,27 +28,26 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  camera: ^0.10.5+9
+  cupertino_icons: ^1.0.2
+  equatable: ^2.0.5
+  firebase_auth: ^4.16.0
   flutter:
     sdk: flutter
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.2
-  google_sign_in: ^6.2.1
-  firebase_auth: ^4.16.0
+  flutter_dotenv: ^5.1.0
   flutter_riverpod: ^2.4.9
-  riverpod_annotation: ^2.3.3
   flutter_svg: ^2.0.9
-  camera: ^0.10.5+9
-  path_provider: ^2.1.2
-  path: ^1.8.3
+  google_sign_in: ^6.2.1
   http: ^1.1.2
   http_parser: ^4.0.2
-  flutter_dotenv: ^5.1.0
+  logger: ^2.0.2+1
+  path: ^1.8.3
+  path_provider: ^2.1.2
+  riverpod_annotation: ^2.3.3
+  table_calendar: ^3.0.9
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+  flutter_launcher_icons: ^0.13.1
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -56,9 +55,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^3.0.1
+  flutter_test:
+    sdk: flutter
   riverpod_generator: ^2.3.9
   riverpod_lint: ^2.3.7
-  flutter_launcher_icons: ^0.13.1
 
 # Flutter launcher icons
 flutter_launcher_icons:
@@ -67,10 +67,9 @@ flutter_launcher_icons:
   remove_alpha_ios: true
   image_path: "assets/icons/logo_skinsavvy_mark.png"
   min_sdk_android: 21 # android min sdk min:16, default 21
-    
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-
 # The following section is specific to Flutter packages.
 flutter:
 
@@ -82,15 +81,16 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/home/
+    - assets/images/routine/
+    - assets/images/scan/
     - assets/icons/
     - .env
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
-
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
-
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
   # "family" key with the font family name, and a "fonts" key with a
@@ -117,6 +117,5 @@ flutter:
           weight: 600
         - asset: fonts/Poppins-Bold.ttf
           weight: 700
-  #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

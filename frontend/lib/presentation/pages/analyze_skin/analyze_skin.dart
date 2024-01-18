@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -8,6 +10,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skinsavvy/core/config.dart';
+import 'package:skinsavvy/core/themes/theme.dart';
+import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
 
@@ -15,10 +19,10 @@ import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_mo
 class AnalyzeSkinPage extends StatefulWidget {
   const AnalyzeSkinPage({
     super.key,
-    required this.camera,
+    required this.cameras,
   });
 
-  final CameraDescription camera;
+  final List<CameraDescription> cameras;
 
   @override
   AnalyzeSkinPageState createState() => AnalyzeSkinPageState();
@@ -28,6 +32,8 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
   late CameraController _controller;
   late Future<void>? _initializeControllerFuture;
 
+  CameraDescription? _selectedCamera = cameras[1];
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +41,7 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     // create a CameraController.
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      widget.camera,
+      _selectedCamera ?? widget.cameras[0],
       // Define the resolution to use.
       ResolutionPreset.ultraHigh,
     );
@@ -87,35 +93,88 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
           future: _initializeControllerFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is complete, display the preview.
-              return CameraPreview(_controller);
+              final size = MediaQuery.of(context).size;
+
+              return SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: 100,
+                      child: CameraPreview(_controller),
+                    ),
+                  ));
             } else {
               // Otherwise, display a loading indicator.
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.primaryColor,
+              ));
             }
           },
         ),
       ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 32),
-        child: FloatingActionButton(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999.0),
-          ),
-          // Provide an onPressed callback.
-          onPressed: _captureAndSend,
-          child: SizedBox(
-            width: 300,
-            height: 300,
-            child: SvgPicture.asset(
-              'assets/icons/cam_shutter.svg',
+      bottomSheet: BottomSheet(
+        builder: (BuildContext context) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+            height: 150,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
-          ),
-        ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(
+                  width: 50,
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999.0),
+                  ),
+                  // Provide an onPressed callback.
+                  onPressed: _captureAndSend,
+                  child: SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: SvgPicture.asset(
+                      'assets/icons/cam_shutter.svg',
+                    ),
+                  ),
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999.0),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _selectedCamera = _selectedCamera == cameras[0]
+                          ? cameras[1]
+                          : cameras[0];
+                    });
+                    initState();
+                  },
+                  child: Icon(
+                    Icons.flip_camera_android,
+                    size: 50,
+                    color: Colors.blueGrey[900],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+        onClosing: () {},
       ),
     );
   }
@@ -147,15 +206,28 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
 
       if (!mounted) return;
 
-      // Show modal popup
-      print('Showing modal popup');
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return const AlertDialog(
-              title: Text('Analyzing skin...'),
-              content: SizedBox(
-                  height: 40, width: 40, child: CircularProgressIndicator()),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Analyzing skin...',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  CircularProgressIndicator(
+                    color: AppTheme.primaryColor,
+                  ),
+                ],
+              ),
             );
           });
 
@@ -212,13 +284,20 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
           ),
         );
       } else {
-        print(
-            'Failed to send image to the backend. Status code: ${response.statusCode}');
-        // Handle the error
+        throw ('Failed to send image to the server. Status code: ${response.statusCode}');
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
       print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+
+      Navigator.of(context).pop();
     }
   }
 }

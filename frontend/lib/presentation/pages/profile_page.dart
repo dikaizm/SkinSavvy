@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:skinsavvy/core/routes.dart';
+import 'package:skinsavvy/presentation/widgets/button.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -15,8 +17,16 @@ class _ProfilePageState extends State<ProfilePage> {
         title: const Text('Profile'),
         automaticallyImplyLeading: false,
       ),
-      body: const Center(
-        child: Text('Profile'),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Button(
+            label: 'Logout',
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.login);
+            },
+          )
+        ],
       ),
     );
   }

@@ -1,16 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:skinsavvy/core/themes/theme.dart';
-import 'package:skinsavvy/presentation/widgets/button.dart';
+
+import '../../core/themes/theme.dart';
+import 'button.dart';
 
 class ButtonOption extends Button {
   final bool isSelected;
+  final Image? image;
+  final Color borderColor;
 
   const ButtonOption({
     required this.isSelected,
     required super.label,
+    this.image,
+    this.borderColor = Colors.white,
     super.key,
+    super.fontSize,
     super.height = 42,
-    super.backgroundColor = AppTheme.neutralColor100,
+    super.backgroundColor = Colors.white,
     super.textColor = Colors.black,
     super.onPressed,
     super.horizontalPadding = 8,
@@ -24,43 +30,46 @@ class ButtonOption extends Button {
 class _ButtonOptionState extends State<ButtonOption> {
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: widget.width,
-      height: widget.height,
-      child: ElevatedButton(
-          onPressed: widget.onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: widget.isSelected
-                ? AppTheme.primaryColor.withOpacity(0.2)
-                : AppTheme.neutralColor100,
-            padding: EdgeInsets.symmetric(
-              vertical: widget.verticalPadding,
-              horizontal: widget.horizontalPadding,
-            ),
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-                side: BorderSide(
-                  color: widget.isSelected
-                      ? AppTheme.primaryColor
-                      : AppTheme.neutralColor300,
-                  width: 1.0,
-                )),
-            elevation: 0,
-            shadowColor: Colors.transparent,
+    return ElevatedButton(
+      onPressed: widget.onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: widget.isSelected
+            ? AppTheme.primaryColor.withOpacity(0.3)
+            : widget.backgroundColor,
+        padding: EdgeInsets.symmetric(
+          vertical: widget.verticalPadding,
+          horizontal: widget.horizontalPadding,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: widget.isSelected
+                ? AppTheme.primaryColor
+                : widget.borderColor,
+            width: 1.0,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                widget.label,
-                style: TextStyle(
-                  color: widget.textColor,
-                  fontSize: widget.fontSize,
-                  fontWeight: FontWeight.w600,
-                ),
+        ),
+        elevation: 0,
+        shadowColor: Colors.transparent,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            widget.image ?? Container(),
+            if (widget.image != null) const SizedBox(height: 12),
+            Text(
+              widget.label,
+              style: TextStyle(
+                color: widget.textColor,
+                fontSize: widget.fontSize,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          )),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
