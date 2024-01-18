@@ -26,20 +26,11 @@ This application combines artificial intelligence technology with dermatological
 - Flutter: A Google UI software development toolkit that support cross-platform build.
 
 ## App Interface
-### Login Screen
-<img width="346" alt="image" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/a06da230-3fd7-4647-810a-110a1ceb203a">
+<img width="865" alt="Screen Shot 2024-01-18 at 23 53 41" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/ca19f44f-e37f-46de-a335-033e74719fcc">
 
-### Onboarding Screen
-<img width="345" alt="image" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/a09ad056-3afe-4af4-afaf-2886d0247011">
+<img width="866" alt="Screen Shot 2024-01-18 at 23 53 49" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/4c62797f-16c9-4be9-b76b-dc6d1a96bf00">
 
-### Capture Face Screen
-<img width="347" alt="Screen Shot 2024-01-12 at 22 24 20" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/ee62fa89-8fdb-451c-9682-27a2162d2b66">
-
-### Skin Analysis Result
-<img width="346" alt="Screen Shot 2024-01-12 at 22 24 47" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/fb8633e2-e689-4c46-a922-b3861fe36e92">
-
-### Skincare Recommendation
-<img width="344" alt="Screen Shot 2024-01-12 at 22 28 55" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/9cba49cc-3b56-454a-8112-c6f42c0f7800">
+<img width="873" alt="Screen Shot 2024-01-18 at 23 53 58" src="https://github.com/dikaizm/SkinSavvy/assets/40682104/0aa61999-1b61-414c-9dde-41895559f777">
 
 
 # Documentation
@@ -57,6 +48,11 @@ https://github.com/dikaizm/SkinSavvy.git
 * Install Go 
 
     [Go Installation Link Here!](https://go.dev/doc/install)
+
+* Install onnxruntime
+
+    ONNX Runtime is a machine-learning model accelerator to inference model locally.
+    [Go to official onnxruntime](https://onnxruntime.ai/docs/install/) to install and create your own onnxruntime lib.
 
 * Go to backend directory
 
