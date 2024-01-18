@@ -54,10 +54,22 @@ class _AnalyzeSkinResultPageState extends State<AnalyzeSkinResultPage> {
           ),
         );
       } else {
-        print(response.statusCode);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to get skincare recommendation'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
-    } on Exception catch (e) {
-      print(e);
+    } on Exception {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to get skincare recommendation'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 

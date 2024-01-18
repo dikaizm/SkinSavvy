@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skinsavvy/core/routes.dart';
 
 import '../../core/themes/theme.dart';
 
@@ -27,7 +28,9 @@ class _ScanPageState extends State<ScanPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             _ScanCard(
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.analyzeSkin);
+              },
               title: 'Scan my face',
               imagePath: 'assets/images/scan/face.png',
             ),

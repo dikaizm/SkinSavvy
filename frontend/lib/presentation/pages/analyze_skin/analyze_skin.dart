@@ -8,6 +8,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skinsavvy/core/config.dart';
+import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
 
@@ -15,10 +16,10 @@ import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_mo
 class AnalyzeSkinPage extends StatefulWidget {
   const AnalyzeSkinPage({
     super.key,
-    required this.camera,
+    required this.cameras,
   });
 
-  final CameraDescription camera;
+  final List<CameraDescription> cameras;
 
   @override
   AnalyzeSkinPageState createState() => AnalyzeSkinPageState();
@@ -28,6 +29,8 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
   late CameraController _controller;
   late Future<void>? _initializeControllerFuture;
 
+  CameraDescription? _selectedCamera = cameras[1];
+
   @override
   void initState() {
     super.initState();
@@ -35,9 +38,9 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     // create a CameraController.
     _controller = CameraController(
       // Get a specific camera from the list of available cameras.
-      widget.camera,
+      _selectedCamera ?? widget.cameras[0],
       // Define the resolution to use.
-      ResolutionPreset.medium,
+      ResolutionPreset.ultraHigh,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -50,9 +53,6 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
     _controller.dispose();
     super.dispose();
   }
-
-  double _uploadProgress = 0.0;
-  bool _uploading = true;
 
   @override
   Widget build(BuildContext context) {
@@ -75,42 +75,97 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // You must wait until the controller is initialized before displaying the
       // camera preview. Use a FutureBuilder to display a loading spinner until the
       // controller has finished initializing.
-      body: Column(
-        children: [
-          FutureBuilder<void>(
-            future: _initializeControllerFuture,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                // If the Future is complete, display the preview.
-                return CameraPreview(_controller);
-              } else {
-                // Otherwise, display a loading indicator.
-                return const Center(child: CircularProgressIndicator());
-              }
-            },
-          ),
-        ],
+      body: GestureDetector(
+        onTapDown: (details) {
+          // Get the tap coordinates
+          final double x =
+              details.globalPosition.dx / MediaQuery.of(context).size.width;
+          final double y =
+              details.globalPosition.dy / MediaQuery.of(context).size.height;
+
+          // Set the focus point based on the tap location
+          _controller.setFocusPoint(Offset(x, y));
+        },
+        child: FutureBuilder<void>(
+          future: _initializeControllerFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              final size = MediaQuery.of(context).size;
+
+              return SizedBox(
+                  width: size.width,
+                  height: size.height,
+                  child: FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                        width: 100, // the actual width is not important here
+                        child: CameraPreview(_controller)),
+                  ));
+            } else {
+              // Otherwise, display a loading indicator.
+              return const Center(child: CircularProgressIndicator());
+            }
+          },
+        ),
       ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 32),
-        child: FloatingActionButton(
-          backgroundColor: Colors.transparent,
-          elevation: 0.0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(999.0),
-          ),
-          // Provide an onPressed callback.
-          onPressed: _captureAndSend,
-          child: SizedBox(
-            width: 300,
-            height: 300,
-            child: SvgPicture.asset(
-              'assets/icons/cam_shutter.svg',
+      bottomSheet: BottomSheet(
+        builder: (BuildContext context) {
+          return Container(
+            padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+            height: 150,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
             ),
-          ),
-        ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const SizedBox(width: 50,),
+                FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999.0),
+                  ),
+                  // Provide an onPressed callback.
+                  onPressed: _captureAndSend,
+                  child: SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: SvgPicture.asset(
+                      'assets/icons/cam_shutter.svg',
+                    ),
+                  ),
+                ),
+                FloatingActionButton(
+                  backgroundColor: Colors.transparent,
+                  elevation: 0.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999.0),
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _selectedCamera = _selectedCamera == cameras[0]
+                          ? cameras[1]
+                          : cameras[0];
+                    });
+                    initState();
+                  },
+                  child: Icon(
+                    Icons.flip_camera_android,
+                    size: 50,
+                    color: Colors.blueGrey[900],
+                  ),
+                )
+              ],
+            ),
+          );
+        },
+        onClosing: () {},
       ),
     );
   }
@@ -122,20 +177,35 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
       // Ensure that the camera is initialized.
       await _initializeControllerFuture;
 
+      // Check if exposure compensation is supported
+      if (_controller.value.exposurePointSupported) {
+        _controller.setExposureMode(ExposureMode.auto);
+
+        // Set exposure compensation value (in exposure stops, 0 is neutral)
+        _controller.setExposureOffset(1.0); // Adjust this value as needed
+      }
+      // Check if flash is supported
+      if (_controller.value.flashMode == FlashMode.off) {
+        _controller.setFlashMode(FlashMode.auto);
+      } else {
+        _controller.setFlashMode(FlashMode.off);
+      }
+
       // Attempt to take a picture and get the file `image`
       // where it was saved.
       final image = await _controller.takePicture();
 
       if (!mounted) return;
 
+      // Show modal popup
+      print('Showing modal popup');
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return AlertDialog(
-              title: const Text('Analyzing skin...'),
-              content: LinearProgressIndicator(
-                value: _uploadProgress,
-              ),
+            return const AlertDialog(
+              title: Text('Analyzing skin...'),
+              content: SizedBox(
+                  height: 40, width: 40, child: CircularProgressIndicator()),
             );
           });
 
@@ -155,38 +225,31 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
             'image', 'jpeg'), // Adjust content type based on your image type
       ));
 
-      var client = http.Client();
-      var streamedResponse = await client.send(request);
+      // Send the request
+      var response = await request.send();
 
-      var totalBytes = streamedResponse.contentLength ?? 0;
-      var bytesUploaded = 0;
-
-      streamedResponse.stream.listen((value) {
-        bytesUploaded += value.length;
-        var progress = ((bytesUploaded / totalBytes) * 100).round();
-        setState(() {
-          _uploadProgress = progress / 100;
-        });
-      });
-
-      // Set uploading to true
-      setState(() {
-        _uploading = true;
-      });
-
-      if (streamedResponse.statusCode == 200) {
-        // Set uploading to false
-        setState(() {
-          _uploading = false;
-        });
-
+      if (response.statusCode == 200) {
         print('Image successfully sent to the backend');
-        var response = await streamedResponse.stream.bytesToString();
 
-        final Map<String, dynamic> jsonData = jsonDecode(response);
+        final String jsonString = await response.stream.bytesToString();
+        final Map<String, dynamic> jsonData = jsonDecode(jsonString);
 
         final DetectionResponse detectionResponse =
             DetectionResponse.fromJson(jsonData);
+
+        if (detectionResponse.status != 200) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: detectionResponse.error.isNotEmpty
+                  ? Text(detectionResponse.error)
+                  : const Text('An error occurred. Please try again later.'),
+            ),
+          );
+          Navigator.of(context).pop();
+          return;
+        }
+
+        Navigator.of(context).pop();
 
         await Navigator.of(context).push(
           MaterialPageRoute(
@@ -200,27 +263,12 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
         );
       } else {
         print(
-            'Failed to send image to the backend. Status code: ${streamedResponse.statusCode}');
-
-        // Hide the modal popup on error
-        Navigator.of(context).pop();
-
-        // Set uploading to false
-        setState(() {
-          _uploading = false;
-        });
+            'Failed to send image to the backend. Status code: ${response.statusCode}');
+        // Handle the error
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
       print('Error: $e');
-
-      // Hide the modal popup on error
-      Navigator.of(context).pop();
-
-      // Set uploading to false
-      setState(() {
-        _uploading = false;
-      });
     }
   }
 }
