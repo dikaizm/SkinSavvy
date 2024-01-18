@@ -54,8 +54,8 @@ class _ButtonGradientState extends State<ButtonGradient> {
                   widget.label,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(width: 12),
