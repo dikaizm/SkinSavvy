@@ -22,68 +22,64 @@ class DetectionResponse {
 }
 
 class PredictionData {
-  final List<Prediction> predictions;
-  final List<SkinProblem> skinProblems;
+  final List<PredictionDetail> details;
+  final List<PredictionSummary> summary;
 
   PredictionData({
-    required this.predictions,
-    required this.skinProblems,
+    required this.details,
+    required this.summary,
   });
 
   factory PredictionData.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> predictionsList = json['predictions'] ?? [];
-    final List<Prediction> parsedPredictions = predictionsList
-        .map((prediction) => Prediction.fromJson(prediction))
-        .toList();
+    final List<dynamic> detailsList = json['details'] ?? [];
+    final List<PredictionDetail> parsedDetails =
+        detailsList.map((detail) => PredictionDetail.fromJson(detail)).toList();
 
-    List<SkinProblem> skinProblemsList = [];
-    if (parsedPredictions.isNotEmpty) {
-      for (var prediction in parsedPredictions) {
-        String name = prediction.name;
-
-        var found = false;
-        for (var skinProblem in skinProblemsList) {
-          if (skinProblem.name == name) {
-            found = true;
-            break;
-          }
-        }
-        if (!found) {
-          skinProblemsList.add(SkinProblem(name: name));
-        }
-      }
-    }
+    final List<dynamic> summaryList = json['summary'] ?? [];
+    final List<PredictionSummary> parsedSummary =
+        summaryList.map((summary) => PredictionSummary.fromJson(summary)).toList();
 
     return PredictionData(
-        predictions: parsedPredictions, skinProblems: skinProblemsList);
+      details: parsedDetails,
+      summary: parsedSummary,
+    );
   }
 }
 
-class SkinProblem {
+class PredictionSummary {
   final String name;
+  final double percentage;
 
-  SkinProblem({
+  PredictionSummary({
     required this.name,
+    required this.percentage,
   });
+
+  factory PredictionSummary.fromJson(Map<String, dynamic> json) {
+    return PredictionSummary(
+      name: json['name'] ?? '',
+      percentage: json['percentage'] ?? 0.0,
+    );
+  }
 }
 
-class Prediction {
+class PredictionDetail {
   final double confidence;
   final String name;
   final List<Coordinate> coords;
 
-  Prediction({
+  PredictionDetail({
     required this.confidence,
     required this.name,
     required this.coords,
   });
 
-  factory Prediction.fromJson(Map<String, dynamic> json) {
+  factory PredictionDetail.fromJson(Map<String, dynamic> json) {
     final List<dynamic> coordsList = json['coords'] ?? [];
     final List<Coordinate> parsedCoords =
         coordsList.map((coord) => Coordinate.fromJson(coord)).toList();
 
-    return Prediction(
+    return PredictionDetail(
       confidence: json['confidence'] ?? 0.0,
       name: json['name'] ?? '',
       coords: parsedCoords,

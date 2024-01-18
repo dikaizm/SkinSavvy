@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -8,6 +10,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:skinsavvy/core/config.dart';
+import 'package:skinsavvy/core/themes/theme.dart';
 import 'package:skinsavvy/main.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/analyze_result_page.dart';
 import 'package:skinsavvy/presentation/pages/analyze_skin/models/analyze_skin_model.dart';
@@ -98,12 +101,16 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
                   child: FittedBox(
                     fit: BoxFit.cover,
                     child: SizedBox(
-                        width: 100, // the actual width is not important here
-                        child: CameraPreview(_controller)),
+                      width: 100,
+                      child: CameraPreview(_controller),
+                    ),
                   ));
             } else {
               // Otherwise, display a loading indicator.
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                  child: CircularProgressIndicator(
+                color: AppTheme.primaryColor,
+              ));
             }
           },
         ),
@@ -124,7 +131,9 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const SizedBox(width: 50,),
+                const SizedBox(
+                  width: 50,
+                ),
                 FloatingActionButton(
                   backgroundColor: Colors.transparent,
                   elevation: 0.0,
@@ -197,15 +206,28 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
 
       if (!mounted) return;
 
-      // Show modal popup
-      print('Showing modal popup');
       showDialog(
           context: context,
           builder: (BuildContext context) {
             return const AlertDialog(
-              title: Text('Analyzing skin...'),
-              content: SizedBox(
-                  height: 40, width: 40, child: CircularProgressIndicator()),
+              backgroundColor: Colors.white,
+              surfaceTintColor: Colors.white,
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Analyzing skin...',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  CircularProgressIndicator(
+                    color: AppTheme.primaryColor,
+                  ),
+                ],
+              ),
             );
           });
 
@@ -263,12 +285,26 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
         );
       } else {
         print(
-            'Failed to send image to the backend. Status code: ${response.statusCode}');
+            'Failed to send image to the server. Status code: ${response.statusCode}');
         // Handle the error
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to send image to the server'),
+            backgroundColor: Colors.redAccent,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
       print('Error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to send image to the server'),
+          backgroundColor: Colors.redAccent,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
     }
   }
 }

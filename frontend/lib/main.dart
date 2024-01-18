@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
       routes: {
         AppRoutes.login: (context) => const LoginPage(),
         AppRoutes.onboarding: (context) => const OnboardingPage(),
-        AppRoutes.analyzeSkin: (context) => AnalyzeSkinPage(camera: cameras[0]),
+        AppRoutes.analyzeSkin: (context) => AnalyzeSkinPage(cameras: cameras),
         AppRoutes.home: (context) => const MainPage(),
         AppRoutes.skinProgress: (context) => const SkinProgressPage(),
         AppRoutes.scan: (context) => const ScanPage(),
