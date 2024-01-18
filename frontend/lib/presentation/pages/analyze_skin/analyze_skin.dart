@@ -284,27 +284,20 @@ class AnalyzeSkinPageState extends State<AnalyzeSkinPage> {
           ),
         );
       } else {
-        print(
-            'Failed to send image to the server. Status code: ${response.statusCode}');
-        // Handle the error
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to send image to the server'),
-            backgroundColor: Colors.redAccent,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
+        throw ('Failed to send image to the server. Status code: ${response.statusCode}');
       }
     } catch (e) {
       // If an error occurs, log the error to the console.
       print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Failed to send image to the server'),
+          content: Text('Something went wrong'),
           backgroundColor: Colors.redAccent,
           behavior: SnackBarBehavior.floating,
         ),
       );
+
+      Navigator.of(context).pop();
     }
   }
 }

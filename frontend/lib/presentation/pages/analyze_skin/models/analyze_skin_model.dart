@@ -48,7 +48,7 @@ class PredictionData {
 
 class PredictionSummary {
   final String name;
-  final double percentage;
+  final int percentage;
 
   PredictionSummary({
     required this.name,
